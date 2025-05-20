@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paws & Tails - Registro</title>
+    <link rel="stylesheet" href="../assets/css/NewStyles.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <h2 style="text-align:center">Registro de Usuario</h2>
+
+    <div class="registro-container">
+        <form id="registroForm">
+            <input type="text" id="nombreUsuario" placeholder="Nombre de Usuario" required />
+            <input type="email" id="correo" placeholder="Correo Electrónico" required />
+            <input type="password" id="password" placeholder="Contraseña" required />
+
+            <input type="text" id="nombreCliente" placeholder="Nombre" required />
+            <input type="text" id="apellidoCliente" placeholder="Apellido" required />
+            <input type="text" id="cedulaRuc" placeholder="Cédula o RUC" required />
+            <input type="tel" id="telefono" placeholder="Teléfono" required />
+            <input type="date" id="fechaNacimiento" placeholder="Fecha de Nacimiento" />
+            <input type="text" id="direccion" placeholder="Dirección" required />
+
+            <button type="submit">Registrarme</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        $(function () {
+            $('#header-placeholder').load('../components/header.html', function () {
+                inicializarMenuHamburguesa();
+                controlarBotonesDeSesion();
+                asignarCierreSesion();
+            });
+            $('#footer-placeholder').load('../components/footer.html');
+        });
+
+        $('#registroForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const data = {
+                nombreUsuario: $('#nombreUsuario').val(),
+                correo: $('#correo').val(),
+                password: $('#password').val(),
+                nombreCliente: $('#nombreCliente').val(),
+                apellidoCliente: $('#apellidoCliente').val(),
+                cedulaRuc: $('#cedulaRuc').val(),
+                telefono: $('#telefono').val(),
+                fechaNacimiento: $('#fechaNacimiento').val(),
+                direccion: $('#direccion').val()
+            };
+
+            fetch('http://backendpawstails.runasp.net/api/cuenta/registrarusuario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success || result.ok) {
+                    alert("Usuario registrado con éxito.");
+                    window.location.href = "login.html";
+                } else {
+                    alert("Error: " + (result.message || "No se pudo registrar."));
+                }
+            })
+            .catch(error => {
+                console.error("Error en fetch:", error);
+                alert("Error al conectar con el servidor.");
+            });
+        });
+    </script>
+
+    <script src="../assets/js/FuncionesPAT.js"></script>
+</body>
+</html>

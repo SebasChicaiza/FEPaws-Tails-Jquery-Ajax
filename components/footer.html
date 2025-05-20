@@ -1,0 +1,12 @@
+<footer class="footer">
+    <div class="footer-content">
+        <p>&copy; <span id="current-year"></span> Paws & Tails - Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<script>
+    // Agregar dinámicamente el año al footer
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    });
+</script>
