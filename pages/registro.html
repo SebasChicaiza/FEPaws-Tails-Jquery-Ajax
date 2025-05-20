@@ -1,18 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paws & Tails - Registro</title>
     <link rel="stylesheet" href="../assets/css/NewStyles.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        /* Fondo dinámico con gradiente animado */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(270deg, #f6d365, #fda085, #fbc2eb, #a18cd1);
+            background-size: 800% 800%;
+            animation: gradientMove 15s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 2.2rem;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px #333;
+        }
+
+        .registro-container {
+            max-width: 480px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(10px);
+        }
+
+        form input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: #f1f1f1;
+            transition: all 0.3s;
+        }
+
+        form input:focus {
+            background: #e0f7fa;
+            outline: none;
+            box-shadow: 0 0 5px #00bcd4;
+        }
+
+        form button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        form button:hover {
+            transform: scale(1.03);
+            background: linear-gradient(to right, #0072ff, #00c6ff);
+        }
+
+        @media (max-width: 600px) {
+            .registro-container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+        .ayuda {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.95rem;
+        }
+
+        .ayuda a {
+            color: #0072ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .ayuda a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
 
     <!-- Header -->
     <div id="header-placeholder"></div>
 
-    <h2 style="text-align:center">Registro de Usuario</h2>
+    <h2>🐾Registro de Usuario🐶</h2>
 
     <div class="registro-container">
         <form id="registroForm">
@@ -24,15 +128,17 @@
             <input type="text" id="apellidoCliente" placeholder="Apellido" required />
             <input type="text" id="cedulaRuc" placeholder="Cédula o RUC" required />
             <input type="tel" id="telefono" placeholder="Teléfono" required />
-            <input type="date" id="fechaNacimiento" placeholder="Fecha de Nacimiento" />
+            <input type="date" id="fechaNacimiento" />
             <input type="text" id="direccion" placeholder="Dirección" required />
 
-            <button type="submit">Registrarme</button>
+            <button type="submit">Registrarme 🐕</button>
+            <p class="ayuda">¿Ya tienes cuenta? <a href="../pages/registro.html">Inicia sesión aquí</a></p>
         </form>
     </div>
 
     <!-- Footer -->
     <div id="footer-placeholder"></div>
+    <script src="../assets/js/FuncionesPAT.js"></script>
 
     <script>
         $(function () {
@@ -61,27 +167,25 @@
 
             fetch('http://backendpawstails.runasp.net/api/cuenta/registrarusuario', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
-            .then(res => res.json())
-            .then(result => {
-                if (result.success || result.ok) {
-                    alert("Usuario registrado con éxito.");
-                    window.location.href = "login.html";
-                } else {
-                    alert("Error: " + (result.message || "No se pudo registrar."));
-                }
-            })
-            .catch(error => {
-                console.error("Error en fetch:", error);
-                alert("Error al conectar con el servidor.");
-            });
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success || result.ok) {
+                        alert("Usuario registrado con éxito.");
+                        window.location.href = "login.html";
+                    } else {
+                        alert("Error: " + (result.message || "No se pudo registrar."));
+                    }
+                })
+                .catch(error => {
+                    console.error("Error en fetch:", error);
+                    alert("Error al conectar con el servidor.");
+                });
         });
     </script>
 
-    <script src="../assets/js/FuncionesPAT.js"></script>
 </body>
+
 </html>

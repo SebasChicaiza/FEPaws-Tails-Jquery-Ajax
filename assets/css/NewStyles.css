@@ -14,8 +14,7 @@ html, body {
     justify-content: center; /* 👈 centra los features en horizontal */
     align-items: center; /* 👈 opcional: centra en vertical si quieres */
     flex-wrap: wrap; /* Permite que bajen si no caben */
-    width: 100%;
-    
+    width: 100%;    
 }
 
 .navbar {

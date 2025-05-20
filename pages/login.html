@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paws & Tails - Iniciar Sesión</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/NewStyles.css" />
+
+
+    <style>
+        body {
+            background: linear-gradient(270deg, #f6d365, #fda085, #fbc2eb, #a18cd1);
+            background-size: 800%;
+            animation: gradientMove 15s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 2.2rem;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px #333;
+        }
+
+
+        input:focus {
+            background: #e0f7fa;
+            outline: none;
+            box-shadow: 0 0 5px #00bcd4;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.03);
+            background: linear-gradient(to right, #0072ff, #00c6ff);
+        }
+
+        .ayuda {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.95rem;
+        }
+
+        .ayuda a {
+            color: #0072ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .ayuda a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header (opcional) -->
+    <div style="height: 95dvh;">
+
+
+        <div id="header-placeholder"></div>
+
+        <h2>Iniciar Sesión 🐱</h2>
+
+        <div class="login-container">
+            <form id="login-form" onsubmit="return iniciarSesion(event)">
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" required placeholder="ejemplo@correo.com" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required placeholder="••••••••" />
+                </div>
+
+                <button type="submit" class="login-btn">Ingresar</button>
+
+                <p class="ayuda">¿No tienes cuenta? <a href="../pages/registro.html">Regístrate aquí</a></p>
+            </form>
+        </div>
+
+
+    </div>
+    <!-- Footer (opcional) -->
+    <div id="footer-placeholder"></div>
+    <script src="../assets/js/FuncionesPAT.js"></script>
+
+    <script>
+        $(function () {
+            $('#header-placeholder').load('../components/header.html');
+            $('#footer-placeholder').load('../components/footer.html');
+        });
+        function iniciarSesion(event) {
+            event.preventDefault();
+
+            const email = $('#email').val();
+            const password = $('#password').val();
+
+            fetch('http://backendpawstails.runasp.net/api/cuenta/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ correo: email, password })
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success || result.ok) {
+                        alert("Inicio de sesión exitoso.");
+                        window.location.href = "index.html";
+                    } else {
+                        alert("Error: " + (result.message || "Credenciales incorrectas."));
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al iniciar sesión:", error);
+                    alert("No se pudo conectar con el servidor.");
+                });
+
+            return false;
+        }
+
+
+    </script>
+
+</body>
+
+</html>
