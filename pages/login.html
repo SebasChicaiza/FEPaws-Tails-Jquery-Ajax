@@ -10,6 +10,9 @@
 
 
     <style>
+        html{
+            margin: 0;
+        }
         body {
             background: linear-gradient(270deg, #f6d365, #fda085, #fbc2eb, #a18cd1);
             background-size: 800%;
@@ -79,13 +82,18 @@
         .ayuda a:hover {
             text-decoration: underline;
         }
+        @media (max-width: 600px){
+            .div-ini{
+                height: auto;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <!-- Header (opcional) -->
-    <div style="height: 95dvh;">
+    <div id="div-ini" style="height: 95dvh;">
 
 
         <div id="header-placeholder"></div>
@@ -148,10 +156,7 @@
 
             return false;
         }
-
-
     </script>
-
 </body>
 
 </html>

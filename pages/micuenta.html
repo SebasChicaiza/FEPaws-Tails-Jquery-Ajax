@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,35 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
   <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(270deg, #e4ee2e, #fda085, #fbc2eb, #572dba);
+      background-size: 800% 800%;
+      animation: gradientMove 15s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
     .cuenta-container {
       max-width: 900px;
       margin: 50px auto;
@@ -63,26 +93,26 @@
   </style>
 </head>
 <body>
+  <div class="wrapper">
 
-  <!-- Header -->
-  <div id="header-placeholder"></div>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
 
-  <!-- Mi Cuenta -->
-  <div class="cuenta-container" style="display:none" id="cuenta-wrapper">
-    <h2>👤 Mi Cuenta</h2>
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <div class="cuenta-container" style="display:none" id="cuenta-wrapper">
+        <h2>👤 Mi Cuenta</h2>
 
-    <div class="info-usuario" id="usuario-info">
-      <!-- JS llenará los datos aquí -->
-    </div>
+        <div class="info-usuario" id="usuario-info"></div>
 
-    <h3 class="facturas-title">🧾 Historial de Compras</h3>
-    <div class="facturas-container" id="facturas-container">
-      <!-- JS mostrará las compras aquí -->
-    </div>
+        <h3 class="facturas-title">🧾 Historial de Compras</h3>
+        <div class="facturas-container" id="facturas-container"></div>
+      </div>
+    </main>
+
+    <!-- Footer fijo abajo -->
+    <div id="footer-placeholder"></div>
   </div>
-
-  <!-- Footer -->
-  <div id="footer-placeholder"></div>
 
   <!-- Scripts -->
   <script src="../assets/js/FuncionesPAT.js"></script>
@@ -99,17 +129,17 @@
     document.addEventListener("DOMContentLoaded", function () {
       const cuenta = JSON.parse(localStorage.getItem("cuenta"));
 
-      if (!cuenta || !cuenta.id) {
-        alert("Debes iniciar sesión para acceder a esta sección.");
-        window.location.href = "login.html";
-        return;
-      }
+      // VALIDACIÓN TEMPORALMENTE DESACTIVADA
+      // if (!cuenta || !cuenta.id) {
+      //   alert("Debes iniciar sesión para acceder a esta sección.");
+      //   window.location.href = "login.html";
+      //   return;
+      // }
 
       document.getElementById("cuenta-wrapper").style.display = "block";
-
       document.getElementById("usuario-info").innerHTML = `
-          <p><strong>Nombre:</strong> ${cuenta.nombre}</p>
-          <p><strong>Email:</strong> ${cuenta.correo}</p>
+        <p><strong>Nombre:</strong> ${cuenta.nombre}</p>
+        <p><strong>Email:</strong> ${cuenta.correo}</p>
       `;
 
       const facturas = JSON.parse(localStorage.getItem("facturas")) || [];
@@ -124,17 +154,38 @@
         const div = document.createElement("div");
         div.className = "factura-item";
         div.innerHTML = `
-              <h4>Factura #${index + 1} - ${factura.fecha}</h4>
-              <ul>
-                  ${factura.productos.map(p => `
-                      <li>${p.cantidad} × ${p.nombre} - $${p.precio.toFixed(2)}</li>
-                  `).join("")}
-              </ul>
-              <p><strong>Total:</strong> $${factura.total.toFixed(2)}</p>
-          `;
+          <h4>Factura #${index + 1} - ${factura.fecha}</h4>
+          <ul>
+            ${factura.productos.map(p => `
+              <li>${p.cantidad} × ${p.nombre} - $${p.precio.toFixed(2)}</li>
+            `).join("")}
+          </ul>
+          <p><strong>Total:</strong> $${factura.total.toFixed(2)}</p>
+        `;
         container.appendChild(div);
       });
     });
   </script>
+
+  <!-- Estilos adicionales para mantener footer abajo -->
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    .wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-content {
+      flex: 1;
+    }
+
+    #footer-placeholder {
+      margin-top: auto;
+    }
+  </style>
 </body>
-</html>
