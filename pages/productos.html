@@ -1,116 +1,178 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Productos | Paws & Tails</title>
-  <link rel="stylesheet" href="../assets/css/NewStyles.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../assets/js/FuncionesPAT.js"></script>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-
-    .wrapper {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .main-content {
-      flex: 1;
-    }
-
-    #footer-placeholder {
-      margin-top: auto;
-    }
-  </style>
-</head>
-<body>
-  <div class="wrapper">
-    <div id="header-placeholder"></div>
-
-    <main class="main-content">
-      <div id="loader" style="text-align:center; margin-top:2em;">Cargando productos...</div>
-      <div class="productos-container" id="productos-container"></div>
-    </main>
-
-    <div id="footer-placeholder"></div>
-  </div>
-
-  <script>
-    $(function () {
-      $('#header-placeholder').load('../components/header.html', function () {
-        inicializarMenuHamburguesa();
-        controlarBotonesDeSesion();
-        asignarCierreSesion();
-      });
-      $('#footer-placeholder').load('../components/footer.html');
-    });
-
-    // Cargar productos con cache
-    async function cargarProductos() {
-      const contenedor = document.getElementById('productos-container');
-      const loader = document.getElementById('loader');
-
-      // Usa caché si existe
-      let productos = JSON.parse(localStorage.getItem("productosCache"));
-      if (!productos) {
-        try {
-          const res = await fetch("http://backendpawstails.runasp.net/api/gestion/productos");
-          productos = await res.json();
-          localStorage.setItem("productosCache", JSON.stringify(productos));
-        } catch (err) {
-          loader.innerText = "❌ Error al cargar productos.";
-          console.error(err);
-          return;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos | Paws & Tails</title>
+    <link rel="stylesheet" href="../assets/css/NewStyles.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
         }
-      }
 
-      loader.style.display = "none";
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-      productos.forEach(producto => {
-        const imgUrl = producto.imagenes[0]?.imgUrl || "../assets/images/default-placeholder.png";
-        const carruselId = `carousel-${producto.idProducto}`;
-        const stockId = `stock-${producto.idProducto}`;
-        const qtyId = `qty-${producto.idProducto}`;
+        .main-content {
+            flex: 1;
+        }
 
-        const imagenesHTML = producto.imagenes.map(img =>
-          `<img src="${img.imgUrl}" alt="${producto.prodNombre}" class="carousel-image">`
-        ).join("");
+        #footer-placeholder {
+            margin-top: auto;
+        }
 
-        const card = document.createElement("div");
-        card.className = "producto-card";
-        card.innerHTML = `
-          <div class="carousel-wrapper">
-            <div class="carousel" id="${carruselId}">${imagenesHTML}</div>
-            <button class="carousel-btn prev" onclick="moveCarousel('${producto.idProducto}', -1)">‹</button>
-            <button class="carousel-btn next" onclick="moveCarousel('${producto.idProducto}', 1)">›</button>
-          </div>
+        #categoria-select {
+            border-radius: 5rem;
+            padding: 0.5rem;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-weight: bold;
+            background: linear-gradient(270deg, #f3a5f9, #3a87df);
+            color: white;
+            text-align: center;
+        }
 
-          <h3>${producto.prodNombre}</h3>
-          <p>${producto.prodDescripcion}</p>
-          <div class="precio">$${producto.prodPrecio}</div>
-          <div class="precio">Stock:</div>
-          <div class="stock" id="${stockId}">${producto.prodStock}</div>
+        #categoria-select option {
+            background-color: #3a87df;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-weight: bold;
+        }
 
-          <div class="cart-controls">
-            <label for="${qtyId}">Cantidad:</label>
-            <input type="number" id="${qtyId}" min="1" value="1" class="qty-input" />
+        .producto-card {
+            transition: background-color 0.3s ease, transform 1s ease, border-color 0.7s ease-in-out, border 0.5s ease-in;
+        }
 
-            <button class="add-to-cart-btn" onclick="addToCart(${producto.idProducto}, '${producto.prodNombre}', ${producto.prodPrecio}, '${imgUrl}')">
-              🛒 Agregar al carrito
-            </button>
-          </div>
-        `;
+        .producto-card:hover {
+            background-color: rgb(195, 231, 255);
+            border: 2px solid;
+            border-color: #b162d9;
+        }
+    </style>
+</head>
 
-        contenedor.appendChild(card);
-      });
-    }
+<body>
+    <div class="wrapper">
+        <div id="header-placeholder"></div>
 
-    document.addEventListener("DOMContentLoaded", cargarProductos);
-  </script>
+        <main class="main-content">
+            <div id="loader" style="text-align:center; margin-top:2em;">Cargando productos...</div>
+            <div style="text-align:center; margin-top:1em; ">
+                <label for="categoria-select">Filtrar por categoría:</label>
+                <select id="categoria-select">
+                    <option value="todos">Todos</option>
+                </select>
+            </div>
+
+            <div class="productos-container" id="productos-container"></div>
+        </main>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script>
+        $(function () {
+            $('#header-placeholder').load('../components/header.html', function () {
+                inicializarMenuHamburguesa();
+                controlarBotonesDeSesion();
+                asignarCierreSesion();
+            });
+            $('#footer-placeholder').load('../components/footer.html');
+
+            cargarProductos(); // Mover aquí la llamada
+        });
+
+        let productosGlobal = [];
+
+        function cargarProductos() {
+            const contenedor = $('#productos-container');
+            const loader = $('#loader');
+            const select = $('#categoria-select');
+
+            $.ajax({
+                url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                method: 'GET',
+                success: function (productos) {
+                    productosGlobal = productos;
+                    loader.hide();
+
+                    llenarCategorias(productosGlobal);
+                    renderizarProductos(productosGlobal); // mostrar todos al inicio
+
+                    // Evento de cambio para el select
+                    select.on('change', function () {
+                        const cat = this.value;
+                        const filtrados = cat === "todos"
+                            ? productosGlobal
+                            : productosGlobal.filter(p => p.prodCategoria === cat);
+                        renderizarProductos(filtrados);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    loader.text("Error al cargar productos ❌");
+                    console.error(error);
+                }
+            });
+        }
+
+        function llenarCategorias(productos) {
+            const categorias = [...new Set(productos.map(p => p.prodCategoria))];
+            const select = $('#categoria-select');
+            categorias.forEach(cat => {
+                select.append(`<option value="${cat}">${cat}</option>`);
+            });
+        }
+
+        function renderizarProductos(productos) {
+            const contenedor = $('#productos-container');
+            contenedor.empty();
+
+            productos.forEach(producto => {
+                const imgUrl = producto.prodImg[0] || "../assets/images/default-placeholder.png";
+                const carruselId = `carousel-${producto.idProducto}`;
+                const stockId = `stock-${producto.idProducto}`;
+                const qtyId = `qty-${producto.idProducto}`;
+
+                const imagenesHTML = producto.prodImg.map(img =>
+                    `<img src="${img}" alt="${producto.prodNombre}" class="carousel-image">`
+                ).join("");
+
+                const card = $(`
+                <div class="producto-card">
+                    <div class="carousel-wrapper">
+                        <div class="carousel" id="${carruselId}">${imagenesHTML}</div>
+                        <button class="carousel-btn prev" onclick="moveCarousel('${producto.idProducto}', -1)">‹</button>
+                        <button class="carousel-btn next" onclick="moveCarousel('${producto.idProducto}', 1)">›</button>
+                    </div>
+
+                    <h3>${producto.prodNombre}</h3>
+                    <p>${producto.prodDescripcion}</p>
+                    <div class="precio">$${producto.prodPrecio}</div>
+                    <div class="precio">Stock:</div>
+                    <div class="stock" id="${stockId}">${producto.prodStock}</div>
+
+                    <div class="cart-controls">
+                        <label for="${qtyId}">Cantidad:</label>
+                        <input type="number" id="${qtyId}" min="1" value="1" class="qty-input" />
+                        <button class="add-to-cart-btn" onclick="addToCart(${producto.idProducto}, '${producto.prodNombre}', ${producto.prodPrecio}, '${imgUrl}')">
+                            🛒 Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+            `);
+
+                contenedor.append(card);
+            });
+        }
+    </script>
+
+    <script src="../assets/js/FuncionesPAT.js"></script>
+
 </body>
+
 </html>

@@ -93,6 +93,7 @@
                 padding: 20px;
             }
         }
+
         .ayuda {
             text-align: center;
             margin-top: 16px;
@@ -149,6 +150,39 @@
             });
             $('#footer-placeholder').load('../components/footer.html');
         });
+        // Cargar datos guardados si existen
+        $(document).ready(function () {
+            const savedData = localStorage.getItem('registroFormData');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                $('#nombreUsuario').val(formData.nombreUsuario || '');
+                $('#correo').val(formData.correo || '');
+                $('#password').val(formData.password || '');
+                $('#nombreCliente').val(formData.nombreCliente || '');
+                $('#apellidoCliente').val(formData.apellidoCliente || '');
+                $('#cedulaRuc').val(formData.cedulaRuc || '');
+                $('#telefono').val(formData.telefono || '');
+                $('#fechaNacimiento').val(formData.fechaNacimiento || '');
+                $('#direccion').val(formData.direccion || '');
+            }
+        });
+
+        // Guardar campos en localStorage al escribir
+        $('#registroForm input').on('input change', function () {
+            const formData = {
+                nombreUsuario: $('#nombreUsuario').val(),
+                correo: $('#correo').val(),
+                password: $('#password').val(),
+                nombreCliente: $('#nombreCliente').val(),
+                apellidoCliente: $('#apellidoCliente').val(),
+                cedulaRuc: $('#cedulaRuc').val(),
+                telefono: $('#telefono').val(),
+                fechaNacimiento: $('#fechaNacimiento').val(),
+                direccion: $('#direccion').val()
+            };
+            localStorage.setItem('registroFormData', JSON.stringify(formData));
+        });
+
 
         $('#registroForm').on('submit', function (e) {
             e.preventDefault();
@@ -165,26 +199,28 @@
                 direccion: $('#direccion').val()
             };
 
-            fetch('http://backendpawstails.runasp.net/api/cuenta/registrarusuario', {
+            $.ajax({
+                url: 'http://backendpawstails.runasp.net/api/gestion/usuario/registrar-cliente',
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success || result.ok) {
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result === true) {
                         alert("Usuario registrado con éxito.");
+                        localStorage.removeItem('registroFormData');
                         window.location.href = "login.html";
                     } else {
                         alert("Error: " + (result.message || "No se pudo registrar."));
                     }
-                })
-                .catch(error => {
-                    console.error("Error en fetch:", error);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error al registrar:", error);
                     alert("Error al conectar con el servidor.");
-                });
+                }
+            });
         });
     </script>
+
 
 </body>
 

@@ -10,9 +10,10 @@
 
 
     <style>
-        html{
+        html {
             margin: 0;
         }
+
         body {
             background: linear-gradient(270deg, #f6d365, #fda085, #fbc2eb, #a18cd1);
             background-size: 800%;
@@ -82,10 +83,21 @@
         .ayuda a:hover {
             text-decoration: underline;
         }
-        @media (max-width: 600px){
-            .div-ini{
+
+        @media (max-width: 600px) {
+            .div-ini {
                 height: auto;
             }
+        }
+
+        #div-ini {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;            
+            padding: 2rem;
         }
     </style>
 </head>
@@ -93,35 +105,32 @@
 <body>
 
     <!-- Header (opcional) -->
-    <div id="div-ini" style="height: 95dvh;">
-
-
+    <div id="div-ini">
         <div id="header-placeholder"></div>
+        <main class="main-content">
+            <h2>Iniciar Sesión 🐱</h2>
+            <div class="login-container">
+                <form id="login-form" onsubmit="return iniciarSesion(event)">
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" required placeholder="ejemplo@correo.com" />
+                    </div>
 
-        <h2>Iniciar Sesión 🐱</h2>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" required placeholder="••••••••" />
+                    </div>
 
-        <div class="login-container">
-            <form id="login-form" onsubmit="return iniciarSesion(event)">
-                <div class="form-group">
-                    <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" required placeholder="ejemplo@correo.com" />
-                </div>
+                    <button type="submit" class="login-btn">Ingresar</button>
 
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" required placeholder="••••••••" />
-                </div>
-
-                <button type="submit" class="login-btn">Ingresar</button>
-
-                <p class="ayuda">¿No tienes cuenta? <a href="../pages/registro.html">Regístrate aquí</a></p>
-            </form>
-        </div>
-
-
+                    <p class="ayuda">¿No tienes cuenta? <a href="../pages/registro.html">Regístrate aquí</a></p>
+                </form>
+            </div>
+        </main>
+        <div id="footer-placeholder"></div>
     </div>
-    <!-- Footer (opcional) -->
-    <div id="footer-placeholder"></div>
+
+
     <script src="../assets/js/FuncionesPAT.js"></script>
 
     <script>
@@ -129,33 +138,43 @@
             $('#header-placeholder').load('../components/header.html');
             $('#footer-placeholder').load('../components/footer.html');
         });
+        const userexists = localStorage.getItem('usuario')
+        if (userexists) {
+            window.location.href = "micuenta.html";
+        }
+
         function iniciarSesion(event) {
             event.preventDefault();
 
             const email = $('#email').val();
             const password = $('#password').val();
 
-            fetch('http://backendpawstails.runasp.net/api/cuenta/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ correo: email, password })
-            })
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success || result.ok) {
-                        alert("Inicio de sesión exitoso.");
-                        window.location.href = "index.html";
+            $.ajax({
+                url: 'http://backendpawstails.runasp.net/api/gestion/usuario/autenticar',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ correo: email, password }),
+                success: function (usuario) {
+                    if (usuario && usuario.ID_USUARIO) {
+                        // Guardar los datos del usuario en localStorage
+                        localStorage.setItem('usuario', JSON.stringify(usuario));
+
+                        alert("Inicio de sesión exitoso. Bienvenido " + usuario.USR_NOMBRE);
+                        window.location.href = "productos.html";
                     } else {
-                        alert("Error: " + (result.message || "Credenciales incorrectas."));
+                        alert("Credenciales incorrectas.");
                     }
-                })
-                .catch(error => {
+                },
+                error: function (xhr, status, error) {
                     console.error("Error al iniciar sesión:", error);
                     alert("No se pudo conectar con el servidor.");
-                });
+                }
+            });
 
             return false;
         }
+
+
     </script>
 </body>
 

@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Botón para eliminar del carrito
         const botonEliminar = document.createElement("button");
         botonEliminar.className = "btn-eliminar";
-        botonEliminar.textContent = "❌ Quitar";
+        botonEliminar.textContent = "❌";
         botonEliminar.onclick = () => eliminarDelCarrito(index);
         item.appendChild(botonEliminar);
 

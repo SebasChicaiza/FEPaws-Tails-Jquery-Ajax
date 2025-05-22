@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos | Paws & Tails</title>
+    <link rel="stylesheet" href="../assets/css/NewStyles.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        #footer-placeholder {
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div id="header-placeholder"></div>
+
+        <main class="main-content">
+            <div id="loader" style="text-align:center; margin-top:2em;">Cargando productos...</div>
+            <div class="productos-container" id="productos-container"></div>
+        </main>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script>
+        $(function () {
+            $('#header-placeholder').load('../components/header.html', function () {
+                inicializarMenuHamburguesa();
+                controlarBotonesDeSesion();
+                asignarCierreSesion();
+            });
+            $('#footer-placeholder').load('../components/footer.html');
+        });
+
+        // Cargar productos con cache
+        async function cargarProductos() {
+            const contenedor = document.getElementById('productos-container');
+            const loader = document.getElementById('loader');
+
+            // Usa caché si existe
+            let productos = JSON.parse(localStorage.getItem("productosCache"));
+            if (!productos) {
+                try {
+                    const res = await fetch("http://backendpawstails.runasp.net/api/gestion/productos");
+                    productos = await res.json();
+                    localStorage.setItem("productosCache", JSON.stringify(productos));
+                } catch (err) {
+                    loader.innerText = "❌ Error al cargar productos.";
+                    console.error(err);
+                    return;
+                }
+            }
+
+            loader.style.display = "none";
+
+            productos.forEach(producto => {
+                const imgUrl = producto.prodImg[0] || "../assets/images/default-placeholder.png";
+                const carruselId = `carousel-${producto.idProducto}`;
+                const stockId = `stock-${producto.idProducto}`;
+                const qtyId = `qty-${producto.idProducto}`;
+
+                const imagenesHTML = producto.prodImg.map(img =>
+                    `<img src="${img}" alt="${producto.prodNombre}" class="carousel-image">`
+                ).join("");
+
+                const card = document.createElement("div");
+                card.className = "producto-card";
+                card.innerHTML = `
+    <div class="carousel-wrapper">
+      <div class="carousel" id="${carruselId}">${imagenesHTML}</div>
+      <button class="carousel-btn prev" onclick="moveCarousel('${producto.idProducto}', -1)">‹</button>
+      <button class="carousel-btn next" onclick="moveCarousel('${producto.idProducto}', 1)">›</button>
+    </div>
+
+    <h3>${producto.prodNombre}</h3>
+    <p>${producto.prodDescripcion}</p>
+    <div class="precio">$${producto.prodPrecio}</div>
+    <div class="precio">Stock:</div>
+    <div class="stock" id="${stockId}">${producto.prodStock}</div>
+
+    <div class="cart-controls">
+      <label for="${qtyId}">Cantidad:</label>
+      <input type="number" id="${qtyId}" min="1" value="1" class="qty-input" />
+      <button class="add-to-cart-btn" onclick="addToCart(${producto.idProducto}, '${producto.prodNombre}', ${producto.prodPrecio}, '${imgUrl}')">
+        🛒 Agregar al carrito
+      </button>
+    </div>
+  `;
+                contenedor.appendChild(card);
+            });
+
+        }
+
+        document.addEventListener("DOMContentLoaded", cargarProductos);
+    </script>
+    <script src="../assets/js/FuncionesPAT.js"></script>
+
+</body>
+
+</html>

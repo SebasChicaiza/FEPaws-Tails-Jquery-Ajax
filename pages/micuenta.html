@@ -92,6 +92,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="wrapper">
 
@@ -127,14 +128,12 @@
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-      const cuenta = JSON.parse(localStorage.getItem("cuenta"));
-
-      // VALIDACIÓN TEMPORALMENTE DESACTIVADA
-      // if (!cuenta || !cuenta.id) {
-      //   alert("Debes iniciar sesión para acceder a esta sección.");
-      //   window.location.href = "login.html";
-      //   return;
-      // }
+      const userexists = localStorage.getItem('usuario')
+      if (!userexists) {
+        alert("Debes iniciar sesión para acceder a esta sección.");
+        window.location.href = "login.html";
+        return;
+      }
 
       document.getElementById("cuenta-wrapper").style.display = "block";
       document.getElementById("usuario-info").innerHTML = `
@@ -164,12 +163,13 @@
         `;
         container.appendChild(div);
       });
-    });
+    });    
   </script>
 
   <!-- Estilos adicionales para mantener footer abajo -->
   <style>
-    html, body {
+    html,
+    body {
       height: 100%;
       margin: 0;
     }
