@@ -1,15 +1,3 @@
-$(function () {
-    // Cargar header
-    $('#header-placeholder').load('components/header.html', function () {
-        inicializarMenuHamburguesa();
-        controlarBotonesDeSesion(); // mostrar botón admin y logout
-        asignarCierreSesion(); // conectar el botón de cerrar sesión
-    });
-
-    // Cargar footer
-    $('#footer-placeholder').load('components/footer.html');
-});
-
 // Menú desplegable para móviles
 function inicializarMenuHamburguesa() {
     const menuIcon = document.getElementById('menu-icon');
@@ -42,7 +30,7 @@ function asignarCierreSesion() {
     const btnLogout = document.getElementById('logout-btn');
     if (btnLogout) {
         btnLogout.addEventListener('click', function () {
-            localStorage.removeItem("cuenta");
+            localStorage.removeItem("usuario");
             alert("Gracias por usar la aplicación. ¡Hasta luego!");
             window.location.href = "login.html";
         });

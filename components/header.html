@@ -23,4 +23,11 @@
         </ul>
     </nav>
 </header>
+<script>
+    const userexists = localStorage.getItem('usuario');
+    if (userexists) {
+        document.getElementById("logout-btn-item").style.display = "block";
+    }   
+</script>
+
 

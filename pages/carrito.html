@@ -118,10 +118,49 @@
             background-position: right 12px center;
             background-size: 16px;
         }
+
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.7);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #ccc;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .blur {
+            filter: blur(4px);
+            pointer-events: none;
+        }
     </style>
+
 </head>
 
 <body>
+    <div id="loader-overlay">
+        <div class="spinner"></div>
+    </div>
+
+
     <div class="wrapper">
         <!-- Header -->
         <div id="header-placeholder"></div>
@@ -148,13 +187,11 @@
                 </div>
                 <div class="form-flex">
                     <input type="text" id="direccion" placeholder="Dirección de envío" required />
-                    <select id="metodoPago">
-                        <option value="Tarjeta">Tarjeta</option>
-                        <option value="Efectivo">Efectivo</option>
-                    </select>
-                    <input type="text" id="cuenta" placeholder="Número de cuenta" required />
-                    
                 </div>
+                <div class="form-flex">
+                    <input type="text" id="cuenta" placeholder="Número de cuenta" required />
+                </div>
+
 
                 <button class="btn-finalizar" onclick="validarSesionAntesDePagar()">Finalizar Compra</button>
             </div>
@@ -169,6 +206,16 @@
 
     <script src="../assets/js/FuncionesPAT.js"></script>
     <script>
+        function mostrarLoader() {
+            document.getElementById("loader-overlay").style.display = "flex";
+            document.getElementById("contenido-principal").classList.add("blur");
+        }
+
+        function ocultarLoader() {
+            document.getElementById("loader-overlay").style.display = "none";
+            document.getElementById("contenido-principal").classList.remove("blur");
+        }
+
         $(function () {
             $('#header-placeholder').load('../components/header.html', function () {
                 inicializarMenuHamburguesa();
@@ -179,8 +226,8 @@
         });
         function finalizarCompra() {
             const direccion = $('#direccion').val();
-            const metodoPago = $('#metodoPago').val().toLowerCase(); // "tarjeta" o "efectivo"
-            const cuenta = $('#cuenta').val();
+            const metodoPago = "Transferencia"
+            const cuenta = parseInt($('#cuenta').val(), 10);
 
             // Simula obtener usuario y cuenta (ajusta según tu lógica)
             const usuario = JSON.parse(localStorage.getItem('usuario')); // asumiendo que lo guardas al loguearse
@@ -197,19 +244,23 @@
 
             // Adaptar el formato del carrito a lo que pide la API
             const productos = carrito.map(item => ({
-                "<idProducto>k__BackingField": item.idProducto,
-                "<cantidad>k__BackingField": item.cantidad
+                idProducto: item.idProducto,
+                cantidad: item.cantidad
             }));
 
             const datosCompra = {
-                "Carrito": {
-                    "<productos>k__BackingField": productos
+                Carrito: {
+                    productos: productos
                 },
-                "Direccion": direccion,
-                "MetodoPago": metodoPago,
-                "IdUsuario": usuario.ID_USUARIO,
-                "cuenta": cuenta
+                Direccion: direccion,
+                MetodoPago: metodoPago,
+                IdUsuario: usuario.ID_USUARIO,
+                cuenta: parseInt(cuenta) // Asegúrate de que sea entero
             };
+
+            console.log(datosCompra);
+
+            mostrarLoader();
 
             $.ajax({
                 url: 'http://backendpawstails.runasp.net/api/gestion/compra',
@@ -217,24 +268,28 @@
                 contentType: 'application/json',
                 data: JSON.stringify(datosCompra),
                 success: function (result) {
+                    ocultarLoader();
+                    console.log(data)
                     if (result === true) {
                         localStorage.removeItem('carrito');
                         alert("✅ Compra realizada con éxito.");
-                        window.location.href = "confirmacion.html"; // o a donde desees redirigir
+                        window.location.href = "../pages/productos.html";
                     } else {
                         alert("❌ No se pudo completar la compra.");
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error("Error al realizar la compra:", error);
+                    ocultarLoader();
+                    console.error("Error al realizar la compra:", error, xhr, status);
                     alert("Error al conectar con el servidor.");
                 }
             });
+
         }
 
         // Reemplaza el onclick anterior por esta función
         function validarSesionAntesDePagar() {
-            finalizarCompra(); 
+            finalizarCompra();
         }
     </script>
 </body>
