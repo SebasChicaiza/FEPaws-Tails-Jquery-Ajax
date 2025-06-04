@@ -135,10 +135,14 @@
 
     <script>
         $(function () {
-            $('#header-placeholder').load('../components/header.html');
+            $('#header-placeholder').load('../components/header.html', function () {
+                inicializarMenuHamburguesa();
+                controlarBotonesDeSesion();
+                asignarCierreSesion();
+            });
             $('#footer-placeholder').load('../components/footer.html');
         });
-        const userexists = localStorage.getItem('usuario')
+        const userexists = localStorage.getItem('cuenta')
         if (userexists) {
             window.location.href = "micuenta.html";
         }
@@ -155,11 +159,11 @@
                 contentType: 'application/json',
                 data: JSON.stringify({ correo: email, password }),
                 success: function (usuario) {
-                    if (usuario && usuario.ID_USUARIO) {
+                    if (usuario && usuario.IdUsuario) {
                         // Guardar los datos del usuario en localStorage
-                        localStorage.setItem('usuario', JSON.stringify(usuario));
+                        localStorage.setItem('cuenta', JSON.stringify(usuario));
 
-                        alert("Inicio de sesión exitoso. Bienvenido " + usuario.USR_NOMBRE);
+                        alert("Inicio de sesión exitoso. Bienvenido " + usuario.UsuarioNombre);
                         window.location.href = "productos.html";
                     } else {
                         alert("Credenciales incorrectas.");

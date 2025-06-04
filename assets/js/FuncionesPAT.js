@@ -9,6 +9,7 @@ function inicializarMenuHamburguesa() {
         });
     }
 }
+document.addEventListener("DOMContentLoaded", inicializarMenuHamburguesa);
 
 // Mostrar botones según la cuenta guardada
 function controlarBotonesDeSesion() {
@@ -18,7 +19,7 @@ function controlarBotonesDeSesion() {
         const logoutBtn = document.getElementById('logout-btn-item');
         if (logoutBtn) logoutBtn.style.display = "block";
 
-        if (cuenta.rol == 2) {
+        if (cuenta.Rol == 'Administrador') {
             const adminBtn = document.getElementById('admin-btn-item');
             if (adminBtn) adminBtn.style.display = "block";
         }
@@ -30,7 +31,7 @@ function asignarCierreSesion() {
     const btnLogout = document.getElementById('logout-btn');
     if (btnLogout) {
         btnLogout.addEventListener('click', function () {
-            localStorage.removeItem("usuario");
+            localStorage.removeItem("cuenta");
             alert("Gracias por usar la aplicación. ¡Hasta luego!");
             window.location.href = "login.html";
         });
@@ -62,13 +63,13 @@ function addToCart(id, name, price, urlimg) {
     const quantity = parseInt(qtyInput.value);
     const qtyStock = document.getElementById(`stock-${id}`);
     const stock = parseInt(qtyStock.textContent.trim());
-    
+
 
     if (isNaN(quantity) || quantity < 1) {
         alert("Por favor ingresa una cantidad válida.");
         return;
     }
-    if(quantity > stock){
+    if (quantity > stock) {
         alert("No se pudo agregar al carrito. Cantidad seleccionada mayor al stock disponible.");
         return;
     }
@@ -164,13 +165,13 @@ function eliminarDelCarrito(index) {
 function validarSesionAntesDePagar() {
     const cuenta = JSON.parse(localStorage.getItem("cuenta"));
 
-    if (!cuenta || !cuenta.id) {
+    if (!cuenta || !cuenta.IdUsuario) {
         alert("Debes iniciar sesión para finalizar la compra.");
         window.location.href = "/Login";
         return;
     }
     finalizarCompra();
-    
+
     // Aquí podrías continuar con el proceso de pago real, enviar datos, etc.
 }
 function finalizarCompra() {
@@ -194,7 +195,7 @@ function finalizarCompra() {
         })),
         direccion: document.getElementById("direccion").value,
         metodoPago: document.getElementById("metodoPago").value,
-        idUsuario: cuenta.id
+        IdUsuario: cuenta.IdUsuario
     };
 
     fetch('/Carrito/CrearFacturaConDetalle', {
@@ -220,43 +221,3 @@ function finalizarCompra() {
             alert("❌ Error de conexión");
         });
 }
-
-/*Iniciar Sesion*/
-function iniciarSesion(event) {
-    event.preventDefault();
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    if (!email || !password) {
-        alert("Por favor completa todos los campos.");
-        return false;
-    }
-
-    fetch(`/Login/ValidarCliente?correo=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                console.log("Bienvenido:", data.usuario.nombre);
-
-                
-                localStorage.setItem("cuenta", JSON.stringify(data.usuario));               
-                alert("Bienvenido!");
-                window.location.href = "/Home";
-            } else {
-                alert("Combinación de usuario y contraseña inválido. Vuelva a intentar.");
-            }
-        })
-        .catch(err => {
-            console.error("Error en la autenticación:", err);
-            alert("Ocurrió un error al conectar con el servidor.");
-        });
-
-
-    localStorage.setItem("cuenta", JSON.stringify(cuenta));
-    alert("¡Bienvenido, " + cuenta.nombre + "!");
-    window.location.href = "/"; // Redirige al home u otra página
-
-    return false;
-}
-

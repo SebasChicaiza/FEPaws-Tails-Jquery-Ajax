@@ -1,3 +1,17 @@
+<style>
+    #logout-btn:hover {
+        background-color: red;
+
+    }
+
+    #logout-btn {
+        color: black;
+        border-radius: 10rem;
+        padding: 0.5rem;
+        transition: 0.5s ease;
+        background-color: white;
+    }
+</style>
 <header>
     <nav class="navbar">
         <ul class="navbar-nav left">
@@ -27,7 +41,5 @@
     const userexists = localStorage.getItem('usuario');
     if (userexists) {
         document.getElementById("logout-btn-item").style.display = "block";
-    }   
+    }    
 </script>
-
-

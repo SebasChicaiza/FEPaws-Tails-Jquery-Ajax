@@ -61,6 +61,19 @@
         <div id="header-placeholder"></div>
 
         <main class="main-content">
+            <div style="text-align:right; padding: 1rem;">
+                <button id="refrescar-cache-btn" style="
+                    padding: 0.5rem 1rem;
+                    background: linear-gradient(270deg, #a18cd1, #fbc2eb);
+                    border: none;
+                    color: white;
+                    font-weight: bold;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: 0.3s ease;
+                ">Refrescar Productos 🔁</button>
+            </div>
+
             <div id="loader" style="text-align:center; margin-top:2em;">Cargando productos...</div>
             <div style="text-align:center; margin-top:1em; ">
                 <label for="categoria-select">Filtrar por categoría:</label>
@@ -86,6 +99,14 @@
 
             cargarProductos(); // Mover aquí la llamada
         });
+        $('#refrescar-cache-btn').on('click', function () {
+            sessionStorage.removeItem('productosPrecargados');
+            $('#productos-container').empty();
+            $('#categoria-select').html('<option value="todos">Todos</option>');
+            $('#loader').show().text('Actualizando productos...');
+            cargarProductos();
+        });
+
 
         let productosGlobal = [];
 
@@ -94,31 +115,80 @@
             const loader = $('#loader');
             const select = $('#categoria-select');
 
-            $.ajax({
-                url: 'http://backendpawstails.runasp.net/api/gestion/productos',
-                method: 'GET',
-                success: function (productos) {
-                    productosGlobal = productos;
-                    loader.hide();
+            const precargados = sessionStorage.getItem('productosPrecargados');
+            if (precargados) {
+                productosGlobal = JSON.parse(precargados);
+                loader.hide();
+                llenarCategorias(productosGlobal);
+                renderizarProductos(productosGlobal);
+                actualizarStockPeriodicamente(); // iniciar actualización periódica del stock
 
-                    llenarCategorias(productosGlobal);
-                    renderizarProductos(productosGlobal); // mostrar todos al inicio
 
-                    // Evento de cambio para el select
-                    select.on('change', function () {
-                        const cat = this.value;
-                        const filtrados = cat === "todos"
-                            ? productosGlobal
-                            : productosGlobal.filter(p => p.prodCategoria === cat);
-                        renderizarProductos(filtrados);
-                    });
-                },
-                error: function (xhr, status, error) {
-                    loader.text("Error al cargar productos ❌");
-                    console.error(error);
-                }
-            });
+                select.on('change', function () {
+                    const cat = this.value;
+                    const filtrados = cat === "todos"
+                        ? productosGlobal
+                        : productosGlobal.filter(p => p.prodCategoria === cat);
+                    renderizarProductos(filtrados);
+                });
+            } else {
+                // Fallback si no hay productos precargados
+                $.ajax({
+                    url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                    method: 'GET',
+                    success: function (productos) {
+                        productosGlobal = productos;
+                        loader.hide();
+                        sessionStorage.setItem('productosPrecargados', JSON.stringify(productosGlobal));
+
+                        llenarCategorias(productosGlobal);
+                        renderizarProductos(productosGlobal);
+                        actualizarStockPeriodicamente(); // iniciar actualización periódica del stock
+
+
+
+                        select.on('change', function () {
+                            const cat = this.value;
+                            const filtrados = cat === "todos"
+                                ? productosGlobal
+                                : productosGlobal.filter(p => p.prodCategoria === cat);
+                            renderizarProductos(filtrados);
+                        });
+                        s
+                    },
+                    error: function (xhr, status, error) {
+                        loader.text("Error al cargar productos ❌");
+                        console.error(error);
+                    }
+                });
+            }
         }
+        function actualizarStockPeriodicamente() {
+            setInterval(() => {
+                $.ajax({
+                    url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                    method: 'GET',
+                    success: function (productos) {
+                        productos.forEach(prod => {
+                            const stockElemento = $(`#stock-${prod.idProducto}`);
+                            if (stockElemento.length) {
+                                const stockActual = parseInt(stockElemento.text());
+                                if (stockActual !== prod.prodStock) {
+                                    stockElemento.text(prod.prodStock);
+                                    stockElemento.css('color', 'red'); // pequeño efecto visual
+                                    setTimeout(() => stockElemento.css('color', ''), 1000);
+                                }
+                            }
+                        });
+                    },
+                    error: function () {
+                        console.warn("No se pudo actualizar el stock.");
+                    }
+                });
+            }, 10000); // Cada 10 segundos
+        }
+
+
 
         function llenarCategorias(productos) {
             const categorias = [...new Set(productos.map(p => p.prodCategoria))];

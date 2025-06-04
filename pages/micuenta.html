@@ -128,8 +128,8 @@
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-      const userexists = localStorage.getItem('usuario')
-      if (!userexists) {
+      const cuenta = JSON.parse(localStorage.getItem("cuenta"));
+      if (!cuenta) {
         alert("Debes iniciar sesión para acceder a esta sección.");
         window.location.href = "login.html";
         return;
@@ -137,34 +137,52 @@
 
       document.getElementById("cuenta-wrapper").style.display = "block";
       document.getElementById("usuario-info").innerHTML = `
-        <p><strong>Nombre:</strong> ${cuenta.nombre}</p>
-        <p><strong>Email:</strong> ${cuenta.correo}</p>
-      `;
+      <p><strong>Nombre:</strong> ${cuenta.UsuarioNombre}</p>
+      <p><strong>Email:</strong> ${cuenta.UsuarioCorreo}</p>
+    `;
 
-      const facturas = JSON.parse(localStorage.getItem("facturas")) || [];
+      // Llamada a la API con la cédula
       const container = document.getElementById("facturas-container");
+      fetch(`http://backendpawstails.runasp.net/api/gestion/factura/cedula/${cuenta.Cedula}`)
+        .then(response => response.json())
+        .then(data => {
+          if (!data || !data.length) {
+            container.innerHTML = "<p>Aún no has realizado compras.</p>";
+            return;
+          }
 
-      if (facturas.length === 0) {
-        container.innerHTML = "<p>Aún no has realizado compras.</p>";
-        return;
-      }
+          data.forEach((factura, index) => {
+            const productos = factura.DETALLE_FACTURA || [];
+            const total = factura.FAC_TOTAL || 0;
+            const fecha = new Date(factura.FAC_FECHAHORA).toLocaleDateString();
+            const subtotal = (total * 0.85).toFixed(2);
+            const iva = (total * 0.15).toFixed(2);
+            const totalFormatted = total.toFixed(2);
 
-      facturas.forEach((factura, index) => {
-        const div = document.createElement("div");
-        div.className = "factura-item";
-        div.innerHTML = `
-          <h4>Factura #${index + 1} - ${factura.fecha}</h4>
-          <ul>
-            ${factura.productos.map(p => `
-              <li>${p.cantidad} × ${p.nombre} - $${p.precio.toFixed(2)}</li>
-            `).join("")}
-          </ul>
-          <p><strong>Total:</strong> $${factura.total.toFixed(2)}</p>
-        `;
-        container.appendChild(div);
-      });
-    });    
+
+            const div = document.createElement("div");
+            div.className = "factura-item";
+            div.innerHTML = `
+            <h4>Factura #${factura.ID_FACTURA} - ${fecha}</h4>
+            <ul>
+              ${productos.map(p => `
+                <li>${p.DF_CANT} × Producto ID ${p.ID_PRODUCTO} - $${p.DF_PRECIO_VENTA.toFixed(2)}</li>
+              `).join("")}
+            </ul>
+            <p><strong>Subtotal:</strong> $${subtotal}</p>
+            <p><strong>IVA (15%):</strong> $${iva}</p>
+            <p><strong>Total:</strong> $${totalFormatted}</p>
+          `;
+            container.appendChild(div);
+          });
+        })
+        .catch(error => {
+          console.error("Error al cargar facturas:", error);
+          container.innerHTML = "<p>Error al cargar las facturas.</p>";
+        });
+    });
   </script>
+
 
   <!-- Estilos adicionales para mantener footer abajo -->
   <style>

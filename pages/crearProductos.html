@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Productos | Paws & Tails</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="../assets/css/NewStyles.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      animation: bgmove 20s ease infinite;
+      background-size: 400% 400%;
+    }
+
+    @keyframes bgmove {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 3rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #5a2d82;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 0.3rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .preview-img {
+      display: block;
+      max-width: 200px;
+      margin: 1rem auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      background: linear-gradient(to right, #ff7eb3, #ff758c);
+    }
+
+    .success-msg {
+      color: green;
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+
+    .select-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .select-wrapper::after {
+      content: '▼';
+      position: absolute;
+      top: 50%;
+      right: 1rem;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+      font-size: 0.9rem;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      padding-right: 2.5rem;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      background: linear-gradient(to right, #f8f8f8, #fff);
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      color: #333;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: #a18cd1;
+      box-shadow: 0 0 0 3px rgba(161, 140, 209, 0.3);
+      outline: none;
+    }
+
+    #preview-multiple {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+
+    #preview-multiple img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    #btn-regresar {
+      background: #5a2d82;
+      color: white;
+      border: none;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 20%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header cargado por jQuery -->
+  <div id="header-placeholder"></div>
+  <div class="container">
+    <h1>📦 Crear Nuevo Producto</h1>
+    <form id="product-form">
+      <label for="categoria-select">Categoría:</label>
+      <div class="select-wrapper">
+        <select id="categoria-select" required>
+          <option value="" disabled selected>Selecciona una categoría</option>
+        </select>
+      </div>
+
+
+      <label for="nombre">Nombre del Producto:</label>
+      <input type="text" id="nombre" required minlength="3" placeholder="Ej: Cama para perro" />
+
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" rows="3" required minlength="10" placeholder="Mínimo 10 caracteres"></textarea>
+
+      <label for="precio">Precio ($):</label>
+      <input type="number" step="0.01" id="precio" required min="0.01" placeholder="Ej: 25.99" />
+
+      <label for="stock">Stock disponible:</label>
+      <input type="number" id="stock" required min="1" step="1" placeholder="Ej: 10" />
+
+      <label for="imagenes">URLs de las Imágenes:</label>
+      <textarea id="imagenes" rows="3" placeholder="Pega una URL por línea. No uses URLs muy largas."
+        required></textarea>
+      <div id="preview-multiple"></div>
+
+
+
+      <button type="submit">Guardar Producto</button>
+      <div class="success-msg" id="mensaje"></div>
+    </form>
+    <button id="btn-regresar" onclick="window.location.href='adminProductos.html'">Regresar</button>
+
+  </div>
+  <!-- Footer cargado por jQuery -->
+  <div id="footer-placeholder"></div>
+  <script src="../assets/js/FuncionesPAT.js"></script>
+
+  <script>
+    $(function () {
+      $('#header-placeholder').load('../components/header.html', function () {
+        inicializarMenuHamburguesa();
+        controlarBotonesDeSesion();
+        asignarCierreSesion();
+      });
+      $('#footer-placeholder').load('../components/footer.html');
+    });
+
+    // Previsualizar múltiples imágenes
+    $('#imagenes').on('input', function () {
+      const urls = $(this).val().split('\n').map(u => u.trim()).filter(Boolean);
+      const preview = $('#preview-multiple');
+      preview.empty();
+
+      urls.forEach(url => {
+        const img = $('<img>').attr('src', url);
+        preview.append(img);
+      });
+    });
+
+    // Guardar campos temporalmente con sessionStorage
+    const campos = ['categoria-select', 'nombre', 'descripcion', 'precio', 'stock', 'imagenes'];
+
+    $(document).ready(function () {
+      // Restaurar campos si hay algo guardado
+      campos.forEach(id => {
+        const valor = sessionStorage.getItem(id);
+        if (valor) {
+          $(`#${id}`).val(valor).trigger('input');
+        }
+      });
+
+      // Guardar al escribir/cambiar
+      campos.forEach(id => {
+        $(`#${id}`).on('input change', function () {
+          sessionStorage.setItem(id, $(this).val());
+        });
+      });
+
+      // Cargar categorías
+      $.ajax({
+        url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+        method: 'GET',
+        success: function (productos) {
+          llenarCategorias(productos);
+        },
+        error: function () {
+          console.warn('No se pudieron cargar las categorías.');
+        }
+      });
+    });
+
+    function llenarCategorias(productos) {
+      const categorias = [...new Set(productos.map(p => p.prodCategoria))];
+      const select = $('#categoria-select');
+      categorias.forEach(cat => {
+        select.append(`<option value="${cat}">${cat}</option>`);
+      });
+    }
+
+    // Envío del formulario con validaciones
+    $('#product-form').on('submit', function (e) {
+      e.preventDefault();
+
+      const nombre = $('#nombre').val().trim();
+      const descripcion = $('#descripcion').val().trim();
+      const precio = parseFloat($('#precio').val());
+      const stock = parseInt($('#stock').val());
+      const imagenes = $('#imagenes').val().split('\n').map(s => s.trim()).filter(Boolean);
+      const mensaje = $('#mensaje');
+
+      mensaje.text(''); // Limpiar mensajes previos
+
+      // Validaciones
+      if (nombre.length < 3) {
+        mensaje.text('❌ El nombre debe tener al menos 3 caracteres.');
+        return;
+      }
+      if (descripcion.length < 10) {
+        mensaje.text('❌ La descripción debe tener al menos 10 caracteres.');
+        return;
+      }
+      if (isNaN(precio) || precio <= 0) {
+        mensaje.text('❌ El precio debe ser mayor a 0.');
+        return;
+      }
+      if (isNaN(stock) || stock < 1) {
+        mensaje.text('❌ El stock debe ser 1 o más.');
+        return;
+      }
+      if (imagenes.length === 0) {
+        mensaje.text('❌ Debes ingresar al menos una URL de imagen.');
+        return;
+      }
+
+      const producto = {
+        prodCategoria: $('#categoria-select').val(),
+        prodNombre: nombre,
+        prodDescripcion: descripcion,
+        prodPrecio: precio,
+        prodStock: stock,
+        prodImg: imagenes
+      };
+      console.log(JSON.stringify(producto)),
+        $.ajax({
+          url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(producto),
+
+          success: function () {
+            $('#mensaje').text('✅ Producto guardado con éxito');
+            $('#product-form')[0].reset();
+            $('#preview-multiple').empty();
+
+            // Limpiar sessionStorage
+            campos.forEach(id => sessionStorage.removeItem(id));
+          },
+          error: function (err) {
+            $('#mensaje').text('❌ Error al guardar el producto');
+            console.log(err);
+          }
+        });
+    });
+  </script>
+
+
+</body>
+
+</html>

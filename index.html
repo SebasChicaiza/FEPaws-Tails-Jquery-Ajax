@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="../assets/css/NewStyles.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
+
 <body>
 
     <!-- Header cargado por jQuery -->
@@ -25,7 +27,8 @@
 
             <a class="feature" id="feature2" href="productos.html">
                 <div class="feature-image">
-                    <img src="../assets/images/principal/perro-gato-jugando.jpg" alt="Perro y gato jugando" id="img_feature_2" />
+                    <img src="../assets/images/principal/perro-gato-jugando.jpg" alt="Perro y gato jugando"
+                        id="img_feature_2" />
                 </div>
                 <div class="feature-text">
                     <p>Para cuando <br>estén solos</p>
@@ -56,16 +59,36 @@
     </main>
 
     <!-- Footer cargado por jQuery -->
-    <div id="footer-placeholder"></div>   
+    <div id="footer-placeholder"></div>
 
 
     <!-- Script para cargar el header y el footer -->
     <script>
         $(function () {
-            $('#header-placeholder').load('../components/header.html');
+            $('#header-placeholder').load('../components/header.html', function () {
+                inicializarMenuHamburguesa();
+                controlarBotonesDeSesion();
+                asignarCierreSesion();
+            });
             $('#footer-placeholder').load('../components/footer.html');
         });
-    </script>    
+        $(document).ready(function () {
+            if (!sessionStorage.getItem('productosPrecargados')) {
+                $.ajax({
+                    url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                    method: 'GET',
+                    success: function (productos) {
+                        sessionStorage.setItem('productosPrecargados', JSON.stringify(productos));
+                        console.log('Productos precargados desde index');
+                    },
+                    error: function () {
+                        console.warn('No se pudo precargar productos.');
+                    }
+                });
+            }
+        });
+    </script>
     <script src="../assets/js/FuncionesPAT.js"></script>
 </body>
+
 </html>

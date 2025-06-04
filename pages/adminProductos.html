@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin de Productos | Paws & Tails</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/NewStyles.css" />
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #5a2d82;
+        }
+
+        .header button {
+            background: #5a2d82;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th,
+        td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f3f3f3;
+        }
+
+        .edit-btn {
+            background-color: #2196f3;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .edit-btn:hover {
+            background-color: #1976d2;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+    <div class="header">
+        <h1>Gestión de Productos</h1>
+        <button onclick="window.location.href='crearProductos.html'">➕ Crear Producto</button>
+    </div>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Proveedor</th>
+                    <th>Imágenes</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody id="productos-table">
+                <!-- Productos cargados aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script src="../assets/js/FuncionesPAT.js"></script>
+    <script>
+        $(function () {
+            $('#header-placeholder').load('../components/header.html', function () {
+                inicializarMenuHamburguesa();
+                controlarBotonesDeSesion();
+                asignarCierreSesion();
+            });
+            $('#footer-placeholder').load('../components/footer.html');
+        });
+        
+        $(document).on('click', '.delete-btn', function () {
+            const id = $(this).data('id');
+            if (confirm(`¿Seguro que deseas eliminar el producto #${id}? Esta acción no se puede deshacer.`)) {
+                $.ajax({
+                    url: `http://backendpawstails.runasp.net/api/gestion/productos/${id}`,
+                    method: 'DELETE',
+                    success: function () {
+                        alert('✅ Producto eliminado correctamente');
+                        location.reload(); // recarga la tabla
+                    },
+                    error: function () {
+                        alert('❌ Error al eliminar el producto');
+                    }
+                });
+            }
+        });
+
+
+        $(document).ready(function () {
+            $.ajax({
+                url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                method: 'GET',
+                success: function (productos) {
+                    productos.forEach(p => {
+                        $('#productos-table').append(`
+              <tr data-id="${p.idProducto}">
+                <td>${p.idProducto}</td>
+                <td>${p.prodNombre}</td>
+                <td>${p.prodCategoria}</td>
+                <td>${p.prodDescripcion}</td>
+                <td>$${p.prodPrecio}</td>
+                <td>${p.prodStock}</td>
+                <td>${p.prodProveedor || ''}</td>
+                <td><button onclick="verImagenes(${p.idProducto})">🖼️</button></td>
+                <td><button class="edit-btn" onclick="editarProducto(${p.idProducto})">✏️ Editar</button></td>
+                <td>
+                <button class="delete-btn" data-id="${p.idProducto}">🗑️ Eliminar</button>
+                </td>
+
+              </tr>
+            `);
+
+                        // Guardar el producto completo en sessionStorage
+                        sessionStorage.setItem(`producto-${p.idProducto}`, JSON.stringify(p));
+                    });
+                },
+                error: function () {
+                    alert('❌ Error al cargar los productos');
+                }
+            });
+        });
+
+        function editarProducto(id) {
+            window.location.href = `editarProductos.html?id=${id}`;
+        }
+
+        function verImagenes(id) {
+            const producto = JSON.parse(sessionStorage.getItem(`producto-${id}`));
+            if (producto && producto.prodImg) {
+                alert(producto.prodImg.join('\n'));
+            } else {
+                alert('No hay imágenes disponibles');
+            }
+        }
+    </script>
+</body>
+
+</html>

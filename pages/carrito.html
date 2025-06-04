@@ -157,11 +157,12 @@
 
 <body>
     <div id="loader-overlay">
+        <a>Procesando compra. <br /> Espere un momento por favor... <br /></a>
         <div class="spinner"></div>
     </div>
 
 
-    <div class="wrapper">
+    <div class="wrapper" id="wrapper">
         <!-- Header -->
         <div id="header-placeholder"></div>
 
@@ -208,12 +209,12 @@
     <script>
         function mostrarLoader() {
             document.getElementById("loader-overlay").style.display = "flex";
-            document.getElementById("contenido-principal").classList.add("blur");
+            document.getElementById("wrapper").classList.add("blur");
         }
 
         function ocultarLoader() {
             document.getElementById("loader-overlay").style.display = "none";
-            document.getElementById("contenido-principal").classList.remove("blur");
+            document.getElementById("wrapper").classList.remove("blur");
         }
 
         $(function () {
@@ -230,8 +231,8 @@
             const cuenta = parseInt($('#cuenta').val(), 10);
 
             // Simula obtener usuario y cuenta (ajusta según tu lógica)
-            const usuario = JSON.parse(localStorage.getItem('usuario')); // asumiendo que lo guardas al loguearse
-            if (!usuario || !usuario.ID_USUARIO) {
+            const usuario = JSON.parse(localStorage.getItem('cuenta')); // asumiendo que lo guardas al loguearse
+            if (!usuario || !usuario.IdUsuario) {
                 alert("Debes iniciar sesión para realizar la compra.");
                 return;
             }
@@ -242,21 +243,21 @@
                 return;
             }
 
-            // Adaptar el formato del carrito a lo que pide la API
             const productos = carrito.map(item => ({
-                idProducto: item.idProducto,
-                cantidad: item.cantidad
+                "<idProducto>k__BackingField": item.idProducto,
+                "<cantidad>k__BackingField": item.cantidad
             }));
 
             const datosCompra = {
-                Carrito: {
-                    productos: productos
+                "Carrito": {
+                    "<productos>k__BackingField": productos
                 },
-                Direccion: direccion,
-                MetodoPago: metodoPago,
-                IdUsuario: usuario.ID_USUARIO,
-                cuenta: parseInt(cuenta) // Asegúrate de que sea entero
+                "Direccion": direccion,
+                "MetodoPago": metodoPago,
+                "IdUsuario": usuario.IdUsuario,
+                "cuenta": parseInt(cuenta)
             };
+
 
             console.log(datosCompra);
 
@@ -267,9 +268,9 @@
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(datosCompra),
+                
                 success: function (result) {
                     ocultarLoader();
-                    console.log(data)
                     if (result === true) {
                         localStorage.removeItem('carrito');
                         alert("✅ Compra realizada con éxito.");
@@ -281,6 +282,8 @@
                 error: function (xhr, status, error) {
                     ocultarLoader();
                     console.error("Error al realizar la compra:", error, xhr, status);
+                    console.log("Respuesta completa:", xhr.responseText);
+
                     alert("Error al conectar con el servidor.");
                 }
             });
