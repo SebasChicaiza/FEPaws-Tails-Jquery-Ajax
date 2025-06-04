@@ -126,7 +126,7 @@
             const id = $(this).data('id');
             if (confirm(`¿Seguro que deseas eliminar el producto #${id}? Esta acción no se puede deshacer.`)) {
                 $.ajax({
-                    url: `http://backendpawstails.runasp.net/api/gestion/productos/${id}`,
+                    url: `https://backendpawstails.runasp.net/api/gestion/productos/${id}`,
                     method: 'DELETE',
                     success: function () {
                         alert('✅ Producto eliminado correctamente');
@@ -142,7 +142,7 @@
 
         $(document).ready(function () {
             $.ajax({
-                url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                url: 'https://backendpawstails.runasp.net/api/gestion/productos',
                 method: 'GET',
                 success: function (productos) {
                     productos.forEach(p => {

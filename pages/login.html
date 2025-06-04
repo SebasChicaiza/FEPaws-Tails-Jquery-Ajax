@@ -154,7 +154,7 @@
             const password = $('#password').val();
 
             $.ajax({
-                url: 'http://backendpawstails.runasp.net/api/gestion/usuario/autenticar',
+                url: 'https://backendpawstails.runasp.net/api/gestion/usuario/autenticar',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ correo: email, password }),

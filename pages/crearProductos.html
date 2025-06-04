@@ -266,7 +266,7 @@
 
       // Cargar categorías
       $.ajax({
-        url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+        url: 'https://backendpawstails.runasp.net/api/gestion/productos',
         method: 'GET',
         success: function (productos) {
           llenarCategorias(productos);
@@ -330,7 +330,7 @@
       };
       console.log(JSON.stringify(producto)),
         $.ajax({
-          url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+          url: 'https://backendpawstails.runasp.net/api/gestion/productos',
           type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify(producto),
