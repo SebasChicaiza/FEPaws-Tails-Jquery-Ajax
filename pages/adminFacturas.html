@@ -1,150 +1,153 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administrar Facturas | Paws & Tails</title>
-    <link rel="stylesheet" href="../assets/css/NewStyles.css">
+    <link rel="stylesheet" href="../assets/css/NewStyles.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="../assets/images/logoPT.ico" />
+
     <style>
-        body {
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(to right, #fbc2eb, #a6c1ee);
-            margin: 0;
+      body {
+        font-family: "Quicksand", sans-serif;
+        background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        margin: 0;
+      }
 
-        }
+      .container {
+        max-width: 1200px;
+        margin: auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
+      input[type="text"] {
+        padding: 0.5rem;
+        width: 300px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 1rem;
+      }
 
-        input[type="text"] {
-            padding: 0.5rem;
-            width: 300px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            margin-bottom: 1rem;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+      th,
+      td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #ccc;
+      }
 
-        th,
-        td {
-            padding: 0.75rem;
-            border-bottom: 1px solid #ccc;
-        }
+      select {
+        padding: 0.3rem;
+        border-radius: 6px;
+      }
 
-        select {
-            padding: 0.3rem;
-            border-radius: 6px;
-        }
+      .paginacion {
+        text-align: center;
+        margin-top: 1rem;
+      }
 
-        .paginacion {
-            text-align: center;
-            margin-top: 1rem;
-        }
+      .paginacion button {
+        padding: 0.5rem 1rem;
+        margin: 0 0.2rem;
+        border: none;
+        background: #5a2d82;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+      }
 
-        .paginacion button {
-            padding: 0.5rem 1rem;
-            margin: 0 0.2rem;
-            border: none;
-            background: #5a2d82;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        .wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      .container {
+        flex: 1;
+        margin: 1rem;
+      }
 
-        .container {
-            flex: 1;
-            margin: 1rem;
-        }
-
-        #btn-regresar {
-            background: #5a2d82;
-            color: white;
-            border: none;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 20%;
-            margin: 0 auto;
-            margin-bottom: 1rem;
-        }
+      #btn-regresar {
+        background: #5a2d82;
+        color: white;
+        border: none;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 20%;
+        margin: 0 auto;
+        margin-bottom: 1rem;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="wrapper">
-        <div id="header-placeholder"></div>
-        <div class="container">
+      <div id="header-placeholder"></div>
+      <div class="container">
+        <h2>📄 Panel de Administración de Facturas</h2>
+        <input
+          type="text"
+          id="buscar-cedula"
+          placeholder="Buscar por cédula..."
+        />
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Dirección</th>
+              <th>Pago</th>
+              <th>Subtotal</th>
+              <th>IVA</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Cambiar</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-facturas"></tbody>
+        </table>
+        <div class="paginacion" id="paginacion"></div>
+      </div>
+      <button id="btn-regresar" onclick="window.location.href='admin.html'">
+        Regresar
+      </button>
 
-            <h2>📄 Panel de Administración de Facturas</h2>
-            <input type="text" id="buscar-cedula" placeholder="Buscar por cédula...">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Dirección</th>
-                        <th>Pago</th>
-                        <th>Subtotal</th>
-                        <th>IVA</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Cambiar</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-facturas"></tbody>
-            </table>
-            <div class="paginacion" id="paginacion"></div>
-
-        </div>
-        <button id="btn-regresar" onclick="window.location.href='admin.html'">Regresar</button>
-
-        <div id="footer-placeholder"></div>
+      <div id="footer-placeholder"></div>
     </div>
-
-
 
     <script src="../assets/js/FuncionesPAT.js"></script>
     <script>
-        $(function () {
-            $('#header-placeholder').load('../components/header.html', function () {
-                inicializarMenuHamburguesa();
-                controlarBotonesDeSesion();
-                asignarCierreSesion();
-            });
-            $('#footer-placeholder').load('../components/footer.html');
+      $(function () {
+        $("#header-placeholder").load("../components/header.html", function () {
+          inicializarMenuHamburguesa();
+          controlarBotonesDeSesion();
+          asignarCierreSesion();
         });
-        const API_FACTURAS = 'https://backendpawstails.runasp.net/api/gestion/factura';
-        let facturasGlobal = [];
-        let paginaActual = 1;
-        const porPagina = 10;
+        $("#footer-placeholder").load("../components/footer.html");
+      });
+      const API_FACTURAS =
+        "https://backendpawstails.runasp.net/api/gestion/factura";
+      let facturasGlobal = [];
+      let paginaActual = 1;
+      const porPagina = 10;
 
-        function renderTabla(facturas) {
-            const inicio = (paginaActual - 1) * porPagina;
-            const paginadas = facturas.slice(inicio, inicio + porPagina);
-            const cuerpo = $('#tabla-facturas').empty();
-            paginadas.forEach(f => {
-                cuerpo.append(`
+      function renderTabla(facturas) {
+        const inicio = (paginaActual - 1) * porPagina;
+        const paginadas = facturas.slice(inicio, inicio + porPagina);
+        const cuerpo = $("#tabla-facturas").empty();
+        paginadas.forEach((f) => {
+          cuerpo.append(`
         <tr>
           <td>${f.ID_FACTURA}</td>
           <td>${new Date(f.FAC_FECHAHORA).toLocaleString()}</td>
@@ -156,72 +159,77 @@
           <td>${f.FAC_ESTADO}</td>
           <td>
             <select data-id="${f.ID_FACTURA}" class="estado-select">
-              <option ${f.FAC_ESTADO === 'CREADO' ? 'selected' : ''}>CREADO</option>
-              <option ${f.FAC_ESTADO === 'PAGADO' ? 'selected' : ''}>PAGADO</option>
-              <option ${f.FAC_ESTADO === 'CANCELADO' ? 'selected' : ''}>CANCELADO</option>
+              <option ${
+                f.FAC_ESTADO === "CREADO" ? "selected" : ""
+              }>CREADO</option>
+              <option ${
+                f.FAC_ESTADO === "PAGADO" ? "selected" : ""
+              }>PAGADO</option>
+              <option ${
+                f.FAC_ESTADO === "CANCELADO" ? "selected" : ""
+              }>CANCELADO</option>
             </select>
           </td>
         </tr>
       `);
-            });
-            renderPaginacion(facturas.length);
-        }
-
-        function renderPaginacion(total) {
-            const totalPaginas = Math.ceil(total / porPagina);
-            const pagCont = $('#paginacion').empty();
-            for (let i = 1; i <= totalPaginas; i++) {
-                const btn = $(`<button>${i}</button>`);
-                if (i === paginaActual) btn.css('background', '#a6c1ee');
-                btn.on('click', () => {
-                    paginaActual = i;
-                    renderTabla(facturasGlobal);
-                });
-                pagCont.append(btn);
-            }
-        }
-
-        function cargarFacturas() {
-            $.get(API_FACTURAS, function (data) {
-                facturasGlobal = data;
-                paginaActual = 1;
-                renderTabla(facturasGlobal);
-            });
-        }
-        $(document).ready(() => {
-            $('#buscar-cedula').val(''); // Asegura campo limpio
-            cargarFacturas(); // Carga todas las facturas
         });
+        renderPaginacion(facturas.length);
+      }
 
+      function renderPaginacion(total) {
+        const totalPaginas = Math.ceil(total / porPagina);
+        const pagCont = $("#paginacion").empty();
+        for (let i = 1; i <= totalPaginas; i++) {
+          const btn = $(`<button>${i}</button>`);
+          if (i === paginaActual) btn.css("background", "#a6c1ee");
+          btn.on("click", () => {
+            paginaActual = i;
+            renderTabla(facturasGlobal);
+          });
+          pagCont.append(btn);
+        }
+      }
 
-        $('#buscar-cedula').on('input', function () {
-            const cedula = $(this).val().trim();
-            if (cedula.length === 10) {
-                $.get(`${API_FACTURAS}/cedula/${cedula}`, function (result) {
-                    facturasGlobal = Array.isArray(result) ? result : [result];
-                    paginaActual = 1;
-                    renderTabla(facturasGlobal);
-                });
-            } else if (cedula === '') {
-                cargarFacturas();
-            }
+      function cargarFacturas() {
+        $.get(API_FACTURAS, function (data) {
+          facturasGlobal = data;
+          paginaActual = 1;
+          renderTabla(facturasGlobal);
         });
+      }
+      $(document).ready(() => {
+        $("#buscar-cedula").val(""); // Asegura campo limpio
+        cargarFacturas(); // Carga todas las facturas
+      });
 
-        $(document).on('change', '.estado-select', function () {
-            const id = $(this).data('id');
-            const nuevoEstado = $(this).val();
-            $.ajax({
-                url: `${API_FACTURAS}/${id}`,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify({ FAC_ESTADO: nuevoEstado }),
-                success: () => alert(`✅ Estado de factura #${id} actualizado a ${nuevoEstado}`),
-                error: () => alert('❌ Error al actualizar estado')
-            });
+      $("#buscar-cedula").on("input", function () {
+        const cedula = $(this).val().trim();
+        if (cedula.length === 10) {
+          $.get(`${API_FACTURAS}/cedula/${cedula}`, function (result) {
+            facturasGlobal = Array.isArray(result) ? result : [result];
+            paginaActual = 1;
+            renderTabla(facturasGlobal);
+          });
+        } else if (cedula === "") {
+          cargarFacturas();
+        }
+      });
+
+      $(document).on("change", ".estado-select", function () {
+        const id = $(this).data("id");
+        const nuevoEstado = $(this).val();
+        $.ajax({
+          url: `${API_FACTURAS}/${id}`,
+          type: "PUT",
+          contentType: "application/json",
+          data: JSON.stringify({ FAC_ESTADO: nuevoEstado }),
+          success: () =>
+            alert(`✅ Estado de factura #${id} actualizado a ${nuevoEstado}`),
+          error: () => alert("❌ Error al actualizar estado"),
         });
+      });
 
-        $(document).ready(() => cargarFacturas());
+      $(document).ready(() => cargarFacturas());
     </script>
-</body>
-
+  </body>
 </html>

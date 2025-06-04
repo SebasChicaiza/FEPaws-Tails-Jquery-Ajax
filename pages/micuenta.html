@@ -1,209 +1,217 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Cuenta | Paws & Tails</title>
+    <link rel="stylesheet" href="../assets/css/NewStyles.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="../assets/images/logoPT.ico" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi Cuenta | Paws & Tails</title>
-  <link rel="stylesheet" href="../assets/css/NewStyles.css" />
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-  <style>
-    html,
-    body {
-      margin: 0;
-      height: 100%;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(270deg, #e4ee2e, #fda085, #fbc2eb, #572dba);
-      background-size: 800% 800%;
-      animation: gradientMove 15s ease infinite;
-    }
-
-    @keyframes gradientMove {
-      0% {
-        background-position: 0% 50%;
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
       }
 
-      50% {
-        background-position: 100% 50%;
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(270deg, #e4ee2e, #fda085, #fbc2eb, #572dba);
+        background-size: 800% 800%;
+        animation: gradientMove 15s ease infinite;
       }
 
-      100% {
-        background-position: 0% 50%;
+      @keyframes gradientMove {
+        0% {
+          background-position: 0% 50%;
+        }
+
+        50% {
+          background-position: 100% 50%;
+        }
+
+        100% {
+          background-position: 0% 50%;
+        }
       }
-    }
 
-    .cuenta-container {
-      max-width: 900px;
-      margin: 50px auto;
-      background: #fefefe;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-    }
+      .cuenta-container {
+        max-width: 900px;
+        margin: 50px auto;
+        background: #fefefe;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+      }
 
-    .cuenta-container h2 {
-      font-size: 2rem;
-      color: #333;
-      text-align: center;
-      margin-bottom: 30px;
-    }
+      .cuenta-container h2 {
+        font-size: 2rem;
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
 
-    .info-usuario p {
-      font-size: 1.1rem;
-      padding: 5px 0;
-      color: #444;
-    }
+      .info-usuario p {
+        font-size: 1.1rem;
+        padding: 5px 0;
+        color: #444;
+      }
 
-    .facturas-title {
-      margin-top: 40px;
-      font-size: 1.5rem;
-      color: #4d4d4d;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 10px;
-    }
+      .facturas-title {
+        margin-top: 40px;
+        font-size: 1.5rem;
+        color: #4d4d4d;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 10px;
+      }
 
-    .facturas-container .factura-item {
-      margin-top: 20px;
-      padding: 15px;
-      background: #f7f9fc;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-    }
+      .facturas-container .factura-item {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f7f9fc;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
 
-    .factura-item h4 {
-      margin: 0 0 10px;
-      color: #2c3e50;
-    }
+      .factura-item h4 {
+        margin: 0 0 10px;
+        color: #2c3e50;
+      }
 
-    .factura-item ul {
-      padding-left: 20px;
-      list-style-type: disc;
-      margin-bottom: 10px;
-    }
+      .factura-item ul {
+        padding-left: 20px;
+        list-style-type: disc;
+        margin-bottom: 10px;
+      }
 
-    .factura-item p strong {
-      color: #222;
-    }
-  </style>
-</head>
+      .factura-item p strong {
+        color: #222;
+      }
+    </style>
+  </head>
 
-<body>
-  <div class="wrapper">
+  <body>
+    <div class="wrapper">
+      <!-- Header -->
+      <div id="header-placeholder"></div>
 
-    <!-- Header -->
-    <div id="header-placeholder"></div>
+      <!-- Contenido principal -->
+      <main class="main-content">
+        <div class="cuenta-container" style="display: none" id="cuenta-wrapper">
+          <h2>👤 Mi Cuenta</h2>
 
-    <!-- Contenido principal -->
-    <main class="main-content">
-      <div class="cuenta-container" style="display:none" id="cuenta-wrapper">
-        <h2>👤 Mi Cuenta</h2>
+          <div class="info-usuario" id="usuario-info"></div>
 
-        <div class="info-usuario" id="usuario-info"></div>
+          <h3 class="facturas-title">🧾 Historial de Compras</h3>
+          <div class="facturas-container" id="facturas-container"></div>
+        </div>
+      </main>
 
-        <h3 class="facturas-title">🧾 Historial de Compras</h3>
-        <div class="facturas-container" id="facturas-container"></div>
-      </div>
-    </main>
+      <!-- Footer fijo abajo -->
+      <div id="footer-placeholder"></div>
+    </div>
 
-    <!-- Footer fijo abajo -->
-    <div id="footer-placeholder"></div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="../assets/js/FuncionesPAT.js"></script>
-  <script>
-    $(function () {
-      $('#header-placeholder').load('../components/header.html', function () {
-        inicializarMenuHamburguesa();
-        controlarBotonesDeSesion();
-        asignarCierreSesion();
+    <!-- Scripts -->
+    <script src="../assets/js/FuncionesPAT.js"></script>
+    <script>
+      $(function () {
+        $("#header-placeholder").load("../components/header.html", function () {
+          inicializarMenuHamburguesa();
+          controlarBotonesDeSesion();
+          asignarCierreSesion();
+        });
+        $("#footer-placeholder").load("../components/footer.html");
       });
-      $('#footer-placeholder').load('../components/footer.html');
-    });
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const cuenta = JSON.parse(localStorage.getItem("cuenta"));
-      if (!cuenta) {
-        alert("Debes iniciar sesión para acceder a esta sección.");
-        window.location.href = "login.html";
-        return;
-      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const cuenta = JSON.parse(localStorage.getItem("cuenta"));
+        if (!cuenta) {
+          alert("Debes iniciar sesión para acceder a esta sección.");
+          window.location.href = "login.html";
+          return;
+        }
 
-      document.getElementById("cuenta-wrapper").style.display = "block";
-      document.getElementById("usuario-info").innerHTML = `
+        document.getElementById("cuenta-wrapper").style.display = "block";
+        document.getElementById("usuario-info").innerHTML = `
       <p><strong>Nombre:</strong> ${cuenta.UsuarioNombre}</p>
       <p><strong>Email:</strong> ${cuenta.UsuarioCorreo}</p>
     `;
 
-      // Llamada a la API con la cédula
-      const container = document.getElementById("facturas-container");
-      fetch(`https://backendpawstails.runasp.net/api/gestion/factura/cedula/${cuenta.Cedula}`)
-        .then(response => response.json())
-        .then(data => {
-          if (!data || !data.length) {
-            container.innerHTML = "<p>Aún no has realizado compras.</p>";
-            return;
-          }
+        // Llamada a la API con la cédula
+        const container = document.getElementById("facturas-container");
+        fetch(
+          `https://backendpawstails.runasp.net/api/gestion/factura/cedula/${cuenta.Cedula}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (!data || !data.length) {
+              container.innerHTML = "<p>Aún no has realizado compras.</p>";
+              return;
+            }
 
-          data.forEach((factura, index) => {
-            const productos = factura.DETALLE_FACTURA || [];
-            const total = factura.FAC_TOTAL || 0;
-            const fecha = new Date(factura.FAC_FECHAHORA).toLocaleDateString();
-            const subtotal = (total * 0.85).toFixed(2);
-            const iva = (total * 0.15).toFixed(2);
-            const totalFormatted = total.toFixed(2);
+            data.forEach((factura, index) => {
+              const productos = factura.DETALLE_FACTURA || [];
+              const total = factura.FAC_TOTAL || 0;
+              const fecha = new Date(
+                factura.FAC_FECHAHORA
+              ).toLocaleDateString();
+              const subtotal = (total * 0.85).toFixed(2);
+              const iva = (total * 0.15).toFixed(2);
+              const totalFormatted = total.toFixed(2);
 
-
-            const div = document.createElement("div");
-            div.className = "factura-item";
-            div.innerHTML = `
+              const div = document.createElement("div");
+              div.className = "factura-item";
+              div.innerHTML = `
             <h4>Factura #${factura.ID_FACTURA} - ${fecha}</h4>
             <ul>
-              ${productos.map(p => `
-                <li>${p.DF_CANT} × Producto ID ${p.ID_PRODUCTO} - $${p.DF_PRECIO_VENTA.toFixed(2)}</li>
-              `).join("")}
+              ${productos
+                .map(
+                  (p) => `
+                <li>${p.DF_CANT} × Producto ID ${
+                    p.ID_PRODUCTO
+                  } - $${p.DF_PRECIO_VENTA.toFixed(2)}</li>
+              `
+                )
+                .join("")}
             </ul>
             <p><strong>Subtotal:</strong> $${subtotal}</p>
             <p><strong>IVA (15%):</strong> $${iva}</p>
             <p><strong>Total:</strong> $${totalFormatted}</p>
           `;
-            container.appendChild(div);
+              container.appendChild(div);
+            });
+          })
+          .catch((error) => {
+            console.error("Error al cargar facturas:", error);
+            container.innerHTML = "<p>Error al cargar las facturas.</p>";
           });
-        })
-        .catch(error => {
-          console.error("Error al cargar facturas:", error);
-          container.innerHTML = "<p>Error al cargar las facturas.</p>";
-        });
-    });
-  </script>
+      });
+    </script>
 
+    <!-- Estilos adicionales para mantener footer abajo -->
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
 
-  <!-- Estilos adicionales para mantener footer abajo -->
-  <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-    }
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-    .wrapper {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+      .main-content {
+        flex: 1;
+      }
 
-    .main-content {
-      flex: 1;
-    }
-
-    #footer-placeholder {
-      margin-top: auto;
-    }
-  </style>
-</body>
+      #footer-placeholder {
+        margin-top: auto;
+      }
+    </style>
+  </body>
+</html>

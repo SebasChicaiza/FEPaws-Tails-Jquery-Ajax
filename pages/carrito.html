@@ -1,300 +1,347 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mi Carrito | Paws & Tails</title>
     <link rel="stylesheet" href="../assets/css/NewStyles.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="../assets/images/logoPT.ico" />
+
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
 
-        .wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
 
+      .main-content {
+        flex: 1;
+        padding: 2rem;
+      }
+
+      .carrito-item {
+        transition: transform 0.4s ease, background-color 0.4s ease;
+      }
+
+      .carrito-item:hover .btn-eliminar {
+        background-color: rgb(244, 199, 255);
+      }
+
+      .carrito-item:hover {
+        transform: scale(1.1);
+        background-color: rgb(244, 199, 255);
+      }
+
+      .btn-eliminar {
+        background-color: #fafafa;
+        margin-left: 2rem;
+      }
+
+      /* Estilo común */
+      /* Contenedor en flexbox */
+      .form-flex {
+        display: flex;
+        gap: 1rem;
+        max-width: 700px;
+        margin: 1.5rem auto;
+        padding: 0 1rem;
+      }
+
+      @media (max-width: 768px) {
         .main-content {
-            flex: 1;
-            padding: 2rem;
+          margin-left: 1rem;
+          margin-right: 1rem;
         }
 
-        .carrito-item {
-            transition: transform 0.4s ease, background-color 0.4s ease;
-        }
-
-        .carrito-item:hover .btn-eliminar {
-            background-color: rgb(244, 199, 255);
-        }
-
-        .carrito-item:hover {
-            transform: scale(1.1);
-            background-color: rgb(244, 199, 255);
-        }
-
-        .btn-eliminar {
-            background-color: #fafafa;
-            margin-left: 2rem;
-        }
-
-        /* Estilo común */
-        /* Contenedor en flexbox */
         .form-flex {
-            display: flex;
-            gap: 1rem;
-            max-width: 700px;
-            margin: 1.5rem auto;
-            padding: 0 1rem;
+          flex-direction: column;
         }
+      }
 
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 1rem;
-                margin-right: 1rem;
-            }
+      /* Input 70% */
+      #direccion {
+        flex: 0 0 70%;
+      }
 
-            .form-flex {
-                flex-direction: column;
-            }
+      /* Select 30% */
+      #metodoPago {
+        flex: 0 0 30%;
+      }
+
+      /* Estilos compartidos */
+      #direccion,
+      #metodoPago,
+      #cuenta {
+        padding: 12px 16px;
+        font-size: 1rem;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+        background-color: #fafafa;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        outline: none;
+      }
+
+      /* Efecto focus */
+      #direccion:focus,
+      #metodoPago:focus,
+      #cuenta:focus {
+        border-color: #b162d9;
+        box-shadow: 0 0 0 3px rgba(177, 98, 217, 0.2);
+        background-color: #fff;
+      }
+
+      /* Placeholder */
+      #direccion::placeholder {
+        color: #888;
+        font-style: italic;
+      }
+
+      /* Flecha personalizada para select */
+      #metodoPago {
+        appearance: none;
+        background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="gray" height="20" width="20" viewBox="0 0 20 20"><path d="M5.516 7.548L10 12.032l4.484-4.484 1.032 1.032L10 14.096 4.484 8.58z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+      }
+
+      #loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(255, 255, 255, 0.7);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid #ccc;
+        border-top-color: #4f46e5;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
+      }
 
-        /* Input 70% */
-        #direccion {
-            flex: 0 0 70%;
-        }
-
-        /* Select 30% */
-        #metodoPago {
-            flex: 0 0 30%;
-        }
-
-        /* Estilos compartidos */
-        #direccion,
-        #metodoPago,
-        #cuenta {
-            padding: 12px 16px;
-            font-size: 1rem;
-            border: 2px solid #ccc;
-            border-radius: 12px;
-            background-color: #fafafa;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            outline: none;
-        }
-
-        /* Efecto focus */
-        #direccion:focus,
-        #metodoPago:focus,
-        #cuenta:focus {
-            border-color: #b162d9;
-            box-shadow: 0 0 0 3px rgba(177, 98, 217, 0.2);
-            background-color: #fff;
-        }
-
-        /* Placeholder */
-        #direccion::placeholder {
-            color: #888;
-            font-style: italic;
-        }
-
-        /* Flecha personalizada para select */
-        #metodoPago {
-            appearance: none;
-            background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="gray" height="20" width="20" viewBox="0 0 20 20"><path d="M5.516 7.548L10 12.032l4.484-4.484 1.032 1.032L10 14.096 4.484 8.58z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
-        }
-
-        #loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(255, 255, 255, 0.7);
-            z-index: 9999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #ccc;
-            border-top-color: #4f46e5;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .blur {
-            filter: blur(4px);
-            pointer-events: none;
-        }
+      .blur {
+        filter: blur(4px);
+        pointer-events: none;
+      }
     </style>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <div id="loader-overlay">
-        <a>Procesando compra. <br /> Espere un momento por favor... <br /></a>
-        <div class="spinner"></div>
+      <a
+        >Procesando compra. <br />
+        Espere un momento por favor... <br
+      /></a>
+      <div class="spinner"></div>
     </div>
 
-
     <div class="wrapper" id="wrapper">
-        <!-- Header -->
-        <div id="header-placeholder"></div>
+      <!-- Header -->
+      <div id="header-placeholder"></div>
 
-        <main class="main-content">
-            <h2 class="carrito-titulo">🛒 Mi Carrito</h2>
+      <main class="main-content">
+        <h2 class="carrito-titulo">🛒 Mi Carrito</h2>
 
-            <div class="carrito-contenedor" id="carrito-container">
-                <!-- JS insertará los productos aquí -->
-            </div>
+        <div class="carrito-contenedor" id="carrito-container">
+          <!-- JS insertará los productos aquí -->
+        </div>
 
-            <div class="carrito-resumen" id="carrito-summary" style="display:none">
-                <div class="resumen-linea">
-                    <span>Subtotal:</span>
-                    <span id="subtotal">$0.00</span>
-                </div>
-                <div class="resumen-linea">
-                    <span>IVA (15%):</span>
-                    <span id="iva">$0.00</span>
-                </div>
-                <div class="resumen-linea total">
-                    <span>Total:</span>
-                    <span id="total">$0.00</span>
-                </div>
-                <div class="form-flex">
-                    <input type="text" id="direccion" placeholder="Dirección de envío" required />
-                </div>
-                <div class="form-flex">
-                    <input type="text" id="cuenta" placeholder="Número de cuenta" required />
-                </div>
+        <div class="carrito-resumen" id="carrito-summary" style="display: none">
+          <div class="resumen-linea">
+            <span>Subtotal:</span>
+            <span id="subtotal">$0.00</span>
+          </div>
+          <div class="resumen-linea">
+            <span>IVA (15%):</span>
+            <span id="iva">$0.00</span>
+          </div>
+          <div class="resumen-linea total">
+            <span>Total:</span>
+            <span id="total">$0.00</span>
+          </div>
+          <div class="form-flex">
+            <input
+              type="text"
+              id="direccion"
+              placeholder="Dirección de envío"
+              required
+            />
+          </div>
+          <div class="form-flex">
+            <select id="cuenta" required>
+              <option value="">Seleccione una cuenta</option>
+            </select>
+          </div>
 
+          <button class="btn-finalizar" onclick="validarSesionAntesDePagar()">
+            Finalizar Compra
+          </button>
+        </div>
 
-                <button class="btn-finalizar" onclick="validarSesionAntesDePagar()">Finalizar Compra</button>
-            </div>
+        <!-- Mensaje de confirmación temporal -->
+        <div
+          id="mensaje-temp"
+          class="alert alert-success"
+          style="display: none"
+        ></div>
+      </main>
 
-            <!-- Mensaje de confirmación temporal -->
-            <div id="mensaje-temp" class="alert alert-success" style="display:none;"></div>
-        </main>
-
-        <!-- Footer -->
-        <div id="footer-placeholder"></div>
+      <!-- Footer -->
+      <div id="footer-placeholder"></div>
     </div>
 
     <script src="../assets/js/FuncionesPAT.js"></script>
     <script>
-        function mostrarLoader() {
-            document.getElementById("loader-overlay").style.display = "flex";
-            document.getElementById("wrapper").classList.add("blur");
-        }
+      var cuenta = JSON.parse(localStorage.getItem("cuenta"));
+      var cedula = cuenta.Cedula;
+      console.log("Cédula del usuario:", cedula);
 
-        function ocultarLoader() {
-            document.getElementById("loader-overlay").style.display = "none";
-            document.getElementById("wrapper").classList.remove("blur");
-        }
+      function mostrarLoader() {
+        document.getElementById("loader-overlay").style.display = "flex";
+        document.getElementById("wrapper").classList.add("blur");
+      }
 
-        $(function () {
-            $('#header-placeholder').load('../components/header.html', function () {
-                inicializarMenuHamburguesa();
-                controlarBotonesDeSesion();
-                asignarCierreSesion();
-            });
-            $('#footer-placeholder').load('../components/footer.html');
+      function ocultarLoader() {
+        document.getElementById("loader-overlay").style.display = "none";
+        document.getElementById("wrapper").classList.remove("blur");
+      }
+      function cargarCuentas() {
+        $.ajax({
+          url: "http://mibanca.runasp.net/api/Cuentas/cliente/" + cedula,
+          method: "GET",
+          contentType: "application/json",
+
+          success: function (result) {
+            if (Array.isArray(result) && result.length > 0) {
+              const select = document.getElementById("cuenta");
+              select.innerHTML =
+                '<option value="">Seleccione una cuenta</option>';
+
+              result.forEach(function (cuenta) {
+                const option = document.createElement("option");
+                option.value = cuenta.cuenta_id;
+                option.text = `Cuenta ${cuenta.cuenta_id} - ${
+                  cuenta.tipo_cuenta
+                } - $${cuenta.saldo.toFixed(2)}`;
+                select.appendChild(option);
+              });
+            } else {
+              alert("❌ Su cédula no tiene cuentas ligadas en el banco.");
+            }
+          },
+
+          error: function (xhr, status, error) {
+            console.error("Error al consultar:", error, xhr, status);
+            alert("❌ No se encontró un usuario con su cédula en el banco.");
+          },
         });
-        function finalizarCompra() {
-            const direccion = $('#direccion').val();
-            const metodoPago = "Transferencia"
-            const cuenta = parseInt($('#cuenta').val(), 10);
+      };
 
-            // Simula obtener usuario y cuenta (ajusta según tu lógica)
-            const usuario = JSON.parse(localStorage.getItem('cuenta')); // asumiendo que lo guardas al loguearse
-            if (!usuario || !usuario.IdUsuario) {
-                alert("Debes iniciar sesión para realizar la compra.");
-                return;
-            }
+      $(function () {
+        $("#header-placeholder").load("../components/header.html", function () {
+          inicializarMenuHamburguesa();
+          controlarBotonesDeSesion();
+          asignarCierreSesion();
+          cargarCuentas();
+        });
+        $("#footer-placeholder").load("../components/footer.html");
+      });
+      function finalizarCompra() {
+        const direccion = $("#direccion").val();
+        const metodoPago = "Transferencia";
+        const cuenta = parseInt($("#cuenta").val(), 10);
 
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            if (carrito.length === 0) {
-                alert("Tu carrito está vacío.");
-                return;
-            }
-
-            const productos = carrito.map(item => ({
-                "<idProducto>k__BackingField": item.idProducto,
-                "<cantidad>k__BackingField": item.cantidad
-            }));
-
-            const datosCompra = {
-                "Carrito": {
-                    "<productos>k__BackingField": productos
-                },
-                "Direccion": direccion,
-                "MetodoPago": metodoPago,
-                "IdUsuario": usuario.IdUsuario,
-                "cuenta": parseInt(cuenta)
-            };
-
-
-            console.log(datosCompra);
-
-            mostrarLoader();
-
-            $.ajax({
-                url: 'https://backendpawstails.runasp.net/api/gestion/compra',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(datosCompra),
-                
-                success: function (result) {
-                    ocultarLoader();
-                    if (result === true) {
-                        localStorage.removeItem('carrito');
-                        alert("✅ Compra realizada con éxito.");
-                        window.location.href = "../pages/productos.html";
-                    } else {
-                        alert("❌ No se pudo completar la compra.");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    ocultarLoader();
-                    console.error("Error al realizar la compra:", error, xhr, status);
-                    console.log("Respuesta completa:", xhr.responseText);
-
-                    alert("Error al conectar con el servidor.");
-                }
-            });
-
+        // Simula obtener usuario y cuenta (ajusta según tu lógica)
+        const usuario = JSON.parse(localStorage.getItem("cuenta")); // asumiendo que lo guardas al loguearse
+        if (!usuario || !usuario.IdUsuario) {
+          alert("Debes iniciar sesión para realizar la compra.");
+          return;
         }
 
-        // Reemplaza el onclick anterior por esta función
-        function validarSesionAntesDePagar() {
-            finalizarCompra();
+        const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        if (carrito.length === 0) {
+          alert("Tu carrito está vacío.");
+          return;
         }
+
+        const productos = carrito.map((item) => ({
+          "<idProducto>k__BackingField": item.idProducto,
+          "<cantidad>k__BackingField": item.cantidad,
+        }));
+
+        const datosCompra = {
+          Carrito: {
+            "<productos>k__BackingField": productos,
+          },
+          Direccion: direccion,
+          MetodoPago: metodoPago,
+          IdUsuario: usuario.IdUsuario,
+          cuenta: parseInt(cuenta),
+        };
+
+        console.log(datosCompra);
+
+        mostrarLoader();
+
+        $.ajax({
+          url: "https://backendpawstails.runasp.net/api/gestion/compra",
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(datosCompra),
+
+          success: function (result) {
+            ocultarLoader();
+            if (result === true) {
+              localStorage.removeItem("carrito");
+              alert("✅ Compra realizada con éxito.");
+              window.location.href = "../pages/productos.html";
+            } else {
+              alert("❌ No se pudo completar la compra.");
+            }
+          },
+          error: function (xhr, status, error) {
+            ocultarLoader();
+            console.error("Error al realizar la compra:", error, xhr, status);
+            console.log("Respuesta completa:", xhr.responseText);
+
+            alert("Error al conectar con el servidor.");
+          },
+        });
+      }
+
+      // Reemplaza el onclick anterior por esta función
+      function validarSesionAntesDePagar() {
+        finalizarCompra();
+      }
     </script>
-</body>
-
+  </body>
 </html>

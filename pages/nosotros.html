@@ -1,107 +1,118 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paws & Tails - Nosotros</title>
     <link rel="stylesheet" href="../assets/css/NewStyles.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-</head>
-<body>
-
+    <link rel="icon" type="image/x-icon" href="../assets/images/logoPT.ico" />
+  </head>
+  <body>
     <!-- Header -->
     <div id="header-placeholder"></div>
 
     <section class="quienes-somos-section">
-        <div class="quienes-somos-header">
-            <h2>¿Quiénes somos?</h2>
-        </div>
+      <div class="quienes-somos-header">
+        <h2>¿Quiénes somos?</h2>
+      </div>
 
-        <div class="nosotros-carousel">
-            <div class="nosotros-images">
-                <img src="../assets/images/nosotros/perroygato.png" alt="Perro y Gato" />
-                <img src="../assets/images/nosotros/varPets2.png" alt="Varios Mascotas 2" />
-                <img src="../assets/images/nosotros/varPets.png" alt="Varios Mascotas 3" />
-            </div>
+      <div class="nosotros-carousel">
+        <div class="nosotros-images">
+          <img
+            src="../assets/images/nosotros/perroygato.png"
+            alt="Perro y Gato"
+          />
+          <img
+            src="../assets/images/nosotros/varPets2.png"
+            alt="Varios Mascotas 2"
+          />
+          <img
+            src="../assets/images/nosotros/varPets.png"
+            alt="Varios Mascotas 3"
+          />
         </div>
+      </div>
 
-        <div class="quienes-somos-description">
-            <h3>
-                Somos una tienda de mascotas ubicada en Quito, sector La Floresta.<br>
-                Amantes de los animales y del bienestar de nuestros peluditos.
-            </h3>
-        </div>
+      <div class="quienes-somos-description">
+        <h3>
+          Somos una tienda de mascotas ubicada en Quito, sector La Floresta.<br />
+          Amantes de los animales y del bienestar de nuestros peluditos.
+        </h3>
+      </div>
 
-        <div class="custom-video-player">
-            <video id="video" src="../assets/videos/VideoFinPerros.mp4" poster="assets/images/logoPawsTails-noFondo.png"></video>
-            <div class="controls">
-                <button id="playPause">▶️</button>
-                <input id="seekBar" type="range" min="0" value="0" step="1">
-                <button id="mute">🔇</button>
-                <button id="fullscreen">⛶</button>
-            </div>
+      <div class="custom-video-player">
+        <video
+          id="video"
+          src="../assets/videos/VideoFinPerros.mp4"
+          poster="assets/images/logoPawsTails-noFondo.png"
+        ></video>
+        <div class="controls">
+          <button id="playPause">▶️</button>
+          <input id="seekBar" type="range" min="0" value="0" step="1" />
+          <button id="mute">🔇</button>
+          <button id="fullscreen">⛶</button>
         </div>
+      </div>
     </section>
 
     <!-- Footer -->
     <div id="footer-placeholder"></div>
     <script src="../assets/js/FuncionesPAT.js"></script>
 
-
     <script>
-        $(function () {
-            $('#header-placeholder').load('../components/header.html', function () {
-                inicializarMenuHamburguesa();
-                controlarBotonesDeSesion();
-                asignarCierreSesion();
-            });
-            $('#footer-placeholder').load('../components/footer.html');
+      $(function () {
+        $("#header-placeholder").load("../components/header.html", function () {
+          inicializarMenuHamburguesa();
+          controlarBotonesDeSesion();
+          asignarCierreSesion();
         });
+        $("#footer-placeholder").load("../components/footer.html");
+      });
 
-        // Reproductor de video personalizado
-        const video = document.getElementById('video');
-        const playPauseBtn = document.getElementById('playPause');
-        const seekBar = document.getElementById('seekBar');
-        const muteBtn = document.getElementById('mute');
-        const fullscreenBtn = document.getElementById('fullscreen');
+      // Reproductor de video personalizado
+      const video = document.getElementById("video");
+      const playPauseBtn = document.getElementById("playPause");
+      const seekBar = document.getElementById("seekBar");
+      const muteBtn = document.getElementById("mute");
+      const fullscreenBtn = document.getElementById("fullscreen");
 
-        playPauseBtn.onclick = () => {
-            if (video.paused) {
-                video.play();
-                playPauseBtn.textContent = '⏸️';
-            } else {
-                video.pause();
-                playPauseBtn.textContent = '▶️';
-            }
-        };
+      playPauseBtn.onclick = () => {
+        if (video.paused) {
+          video.play();
+          playPauseBtn.textContent = "⏸️";
+        } else {
+          video.pause();
+          playPauseBtn.textContent = "▶️";
+        }
+      };
 
-        video.ontimeupdate = () => {
-            seekBar.value = Math.floor(video.currentTime);
-        };
+      video.ontimeupdate = () => {
+        seekBar.value = Math.floor(video.currentTime);
+      };
 
-        video.onloadedmetadata = () => {
-            seekBar.max = Math.floor(video.duration);
-        };
+      video.onloadedmetadata = () => {
+        seekBar.max = Math.floor(video.duration);
+      };
 
-        seekBar.oninput = () => {
-            video.currentTime = seekBar.value;
-        };
+      seekBar.oninput = () => {
+        video.currentTime = seekBar.value;
+      };
 
-        muteBtn.onclick = () => {
-            video.muted = !video.muted;
-            muteBtn.textContent = video.muted ? '🔈' : '🔇';
-        };
+      muteBtn.onclick = () => {
+        video.muted = !video.muted;
+        muteBtn.textContent = video.muted ? "🔈" : "🔇";
+      };
 
-        fullscreenBtn.onclick = () => {
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) {
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) {
-                video.msRequestFullscreen();
-            }
-        };
+      fullscreenBtn.onclick = () => {
+        if (video.requestFullscreen) {
+          video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) {
+          video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) {
+          video.msRequestFullscreen();
+        }
+      };
     </script>
-
-</body>
+  </body>
 </html>

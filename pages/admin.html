@@ -1,108 +1,112 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paws & Tails</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="../assets/css/NewStyles.css" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/logoPT.ico" />
+
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
-        .wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .main-content {
-            flex: 1;
-        }
-
-        .centered-buttons {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            flex-direction: column;
-        }
-
-        .centered-buttons button {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .centered-buttons button:hover {
-            background-color: #0056b3;
-        }
-        body {
-      font-family: 'Quicksand', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
-      animation: bgmove 20s ease infinite;
-      background-size: 400% 400%;
-    }
-
-    @keyframes bgmove {
-      0% {
-        background-position: 0% 50%;
+      html,
+      body {
+        height: 100%;
+        margin: 0;
       }
 
-      50% {
-        background-position: 100% 50%;
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
 
-      100% {
-        background-position: 0% 50%;
+      .main-content {
+        flex: 1;
       }
-    }
+
+      .centered-buttons {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        flex-direction: column;
+      }
+
+      .centered-buttons button {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .centered-buttons button:hover {
+        background-color: #0056b3;
+      }
+      body {
+        font-family: "Quicksand", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        animation: bgmove 20s ease infinite;
+        background-size: 400% 400%;
+      }
+
+      @keyframes bgmove {
+        0% {
+          background-position: 0% 50%;
+        }
+
+        50% {
+          background-position: 100% 50%;
+        }
+
+        100% {
+          background-position: 0% 50%;
+        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- Header (opcional) -->
     <div id="wrapper">
-        <div id="header-placeholder"></div>
-        <main class="main-content">
-            <div class="centered-buttons">
-                <button onclick="location.href='adminProductos.html'">Gestión Productos</button>
-                <button onclick="location.href='adminFacturas.html'">Gestión Facturas</button>
-            </div>
-
-        </main>
-        <div id="footer-placeholder"></div>
+      <div id="header-placeholder"></div>
+      <main class="main-content">
+        <div class="centered-buttons">
+          <button onclick="location.href='adminProductos.html'">
+            Gestión Productos
+          </button>
+          <button onclick="location.href='adminFacturas.html'">
+            Gestión Facturas
+          </button>
+        </div>
+      </main>
+      <div id="footer-placeholder"></div>
     </div>
 
     <script src="../assets/js/FuncionesPAT.js"></script>
     <script>
-        $(function () {
-            $('#header-placeholder').load('../components/header.html', function () {
-                inicializarMenuHamburguesa();
-                controlarBotonesDeSesion();
-                asignarCierreSesion();
-            });
-            $('#footer-placeholder').load('../components/footer.html');
+      $(function () {
+        $("#header-placeholder").load("../components/header.html", function () {
+          inicializarMenuHamburguesa();
+          controlarBotonesDeSesion();
+          asignarCierreSesion();
         });
-        const cuenta = JSON.parse(localStorage.getItem("cuenta"));
-        const rol = cuenta.Rol;
-        console.log(rol);
-        if ('Administrador' != rol) {
-            alert('No tiene permisos para acceder a esta página...')
-        }
-
+        $("#footer-placeholder").load("../components/footer.html");
+      });
+      const cuenta = JSON.parse(localStorage.getItem("cuenta"));
+      const rol = cuenta.Rol;
+      console.log(rol);
+      if ("Administrador" != rol) {
+        alert("No tiene permisos para acceder a esta página...");
+      }
     </script>
-</body>
+  </body>
+</html>
