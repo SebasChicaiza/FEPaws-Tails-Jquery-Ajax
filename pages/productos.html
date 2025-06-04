@@ -134,7 +134,7 @@
             } else {
                 // Fallback si no hay productos precargados
                 $.ajax({
-                    url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                    url: 'https://backendpawstails.runasp.net/api/gestion/productos',
                     method: 'GET',
                     success: function (productos) {
                         productosGlobal = productos;
@@ -166,7 +166,7 @@
         function actualizarStockPeriodicamente() {
             setInterval(() => {
                 $.ajax({
-                    url: 'http://backendpawstails.runasp.net/api/gestion/productos',
+                    url: 'https://backendpawstails.runasp.net/api/gestion/productos',
                     method: 'GET',
                     success: function (productos) {
                         productos.forEach(prod => {
