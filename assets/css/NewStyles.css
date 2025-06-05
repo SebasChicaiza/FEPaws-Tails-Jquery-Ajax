@@ -422,11 +422,13 @@ html, body {
     width: 100%;
     display: flex;
     flex-wrap: nowrap;
+    
 }
 
     .nosotros-images img {
-        width: 30%;
-        height: 200px;
+        margin: 0 auto;
+        width: 20%;
+        height: auto;
         object-fit: cover;
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);

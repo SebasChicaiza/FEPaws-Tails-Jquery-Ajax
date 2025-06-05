@@ -218,11 +218,15 @@
       $(document).on("change", ".estado-select", function () {
         const id = $(this).data("id");
         const nuevoEstado = $(this).val();
+
         $.ajax({
-          url: `${API_FACTURAS}/${id}`,
+          url: "https://backendpawstails.runasp.net/api/gestion/factura/estado",
           type: "PUT",
           contentType: "application/json",
-          data: JSON.stringify({ FAC_ESTADO: nuevoEstado }),
+          data: JSON.stringify({
+            idFactura: id,
+            nuevoEstado: nuevoEstado,
+          }),
           success: () =>
             alert(`✅ Estado de factura #${id} actualizado a ${nuevoEstado}`),
           error: () => alert("❌ Error al actualizar estado"),
