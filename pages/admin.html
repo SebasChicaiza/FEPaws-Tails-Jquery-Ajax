@@ -7,6 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="../assets/css/NewStyles.css" />
     <link rel="icon" type="image/x-icon" href="../assets/images/logoPT.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
       html,
@@ -22,11 +23,11 @@
       }
 
       .main-content {
-        flex: 1;
+        flex: 0.5;
       }
 
       .centered-buttons {
-        height: 100vh;
+        height: 30dvh;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -87,12 +88,77 @@
             Gestión Facturas
           </button>
         </div>
+        <div style="width: 80%; margin: 0 auto; background-color: #8ebdf0; padding: 3rem; border-radius: 2rem; margin-bottom:  2rem;">
+          <h2 style="width: 900; font-size: 2rem;">Top 5 Productos Más Vendidos</h2>
+          <canvas
+            id="graficoProductos"
+            width="auto"
+            height="90"
+            style="background-color: white"
+          ></canvas>
+        </div>
       </main>
       <div id="footer-placeholder"></div>
     </div>
 
     <script src="../assets/js/FuncionesPAT.js"></script>
     <script>
+      const ctx = document.getElementById("graficoProductos").getContext("2d");
+
+      const grafico = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: [
+            "Cama Suave y Acolchada",
+            "Alimento Balanceado",
+            "Snacks Dentales",
+            "Rascador de Cartón",
+            "Arena Aglomerante",
+          ],
+          datasets: [
+            {
+              label: "Total Vendido",
+              data: [604, 494, 438, 406, 403],
+              backgroundColor: [
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(255, 159, 64, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+                "rgba(255, 205, 86, 0.6)",
+                "rgba(54, 162, 235, 0.6)",
+              ],
+              borderColor: [
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 159, 64, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 205, 86, 1)",
+                "rgba(54, 162, 235, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Unidades Vendidas",
+              },
+            },
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: "Top 5 Productos Más Vendidos",
+            },
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
       $(function () {
         $("#header-placeholder").load("../components/header.html", function () {
           inicializarMenuHamburguesa();
