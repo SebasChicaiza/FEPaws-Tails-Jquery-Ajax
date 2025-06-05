@@ -49,6 +49,8 @@
         border-radius: 20px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
       }
 
       form input {
@@ -119,7 +121,7 @@
     <h2>🐾Registro de Usuario🐶</h2>
 
     <div class="registro-container">
-      <form id="registroForm">
+      <form id="registroForm" style="display: flex; flex-direction: column">
         <input
           type="text"
           id="nombreUsuario"
@@ -132,12 +134,17 @@
           placeholder="Correo Electrónico"
           required
         />
+
+        <!-- Contraseña con ojo -->
+        <!-- Contraseña con ojo (versión que sí se alinea horizontalmente) -->
+        <!-- Contraseña con ojo (alineado correctamente) -->
         <input
-          type="password"
-          id="password"
-          placeholder="Contraseña"
-          required
-        />
+            type="password"
+            id="password"
+            placeholder="Contraseña"
+            required
+            
+          />     
 
         <input type="text" id="nombreCliente" placeholder="Nombre" required />
         <input
@@ -172,6 +179,12 @@
         });
         $("#footer-placeholder").load("../components/footer.html");
       });
+      $("#togglePassword").on("click", function () {
+        const input = $("#password");
+        const type = input.attr("type") === "password" ? "text" : "password";
+        input.attr("type", type);
+      });
+
       // Cargar datos guardados si existen
       $(document).ready(function () {
         const savedData = localStorage.getItem("registroFormData");
@@ -188,6 +201,83 @@
           $("#direccion").val(formData.direccion || "");
         }
       });
+      function validarFormulario() {
+        const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const cedulaRucRegex = /^\d{10}(\d{3})?$/;
+        const telefonoRegex = /^\d{7,10}$/;
+        const textoRegex = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+
+        const campos = {
+          nombreUsuario: $("#nombreUsuario").val().trim(),
+          correo: $("#correo").val().trim(),
+          password: $("#password").val(),
+          nombreCliente: $("#nombreCliente").val().trim(),
+          apellidoCliente: $("#apellidoCliente").val().trim(),
+          cedulaRuc: $("#cedulaRuc").val().trim(),
+          telefono: $("#telefono").val().trim(),
+          fechaNacimiento: $("#fechaNacimiento").val(),
+          direccion: $("#direccion").val().trim(),
+        };
+
+        if (
+          campos.nombreUsuario.length < 4 ||
+          !textoRegex.test(campos.nombreUsuario)
+        ) {
+          alert(
+            "El nombre de usuario debe tener al menos 4 caracteres y contener letras."
+          );
+          return false;
+        }
+
+        if (!correoRegex.test(campos.correo)) {
+          alert("El correo electrónico no es válido.");
+          return false;
+        }
+
+        if (!passwordRegex.test(campos.password)) {
+          alert(
+            "La contraseña debe tener al menos 6 caracteres, incluyendo letras y números."
+          );
+          return false;
+        }
+
+        if (!textoRegex.test(campos.nombreCliente)) {
+          alert("El nombre debe contener letras.");
+          return false;
+        }
+
+        if (!textoRegex.test(campos.apellidoCliente)) {
+          alert("El apellido debe contener letras.");
+          return false;
+        }
+
+        if (!cedulaRucRegex.test(campos.cedulaRuc)) {
+          alert("La cédula o RUC debe tener 10 o 13 dígitos numéricos.");
+          return false;
+        }
+
+        if (!telefonoRegex.test(campos.telefono)) {
+          alert("El teléfono debe tener entre 7 y 10 dígitos numéricos.");
+          return false;
+        }
+
+        if (campos.fechaNacimiento !== "") {
+          const fecha = new Date(campos.fechaNacimiento);
+          const hoy = new Date();
+          if (fecha >= hoy) {
+            alert("La fecha de nacimiento debe ser anterior a hoy.");
+            return false;
+          }
+        }
+
+        if (!textoRegex.test(campos.direccion)) {
+          alert("La dirección debe contener letras.");
+          return false;
+        }
+
+        return true;
+      }
 
       // Guardar campos en localStorage al escribir
       $("#registroForm input").on("input change", function () {
@@ -207,6 +297,10 @@
 
       $("#registroForm").on("submit", function (e) {
         e.preventDefault();
+
+        if (!validarFormulario()) {
+          return; // Detiene si no pasa las validaciones
+        }
 
         const data = {
           nombreUsuario: $("#nombreUsuario").val(),

@@ -1,45 +1,63 @@
 <style>
-    #logout-btn:hover {
-        background-color: red;
+  #logout-btn:hover {
+    background-color: red;
+  }
 
-    }
-
-    #logout-btn {
-        color: black;
-        border-radius: 10rem;
-        padding: 0.5rem;
-        transition: 0.5s ease;
-        background-color: white;
-    }
+  #logout-btn {
+    color: black;
+    border-radius: 10rem;
+    padding: 0.5rem;
+    transition: 0.5s ease;
+    background-color: white;
+  }
 </style>
 <header>
-    <nav class="navbar">
-        <ul class="navbar-nav left">
-            <img src="../assets/images/logoPawsTails-noFondo.png" alt="Logo" class="logo" />
-            <h1 class="oswald-title">Paws & Tails</h1>
-            <li class="nav-item" id="welcome-message" style="display: none;">
-                <span id="user-welcome"></span>
-            </li>
-        </ul>
-        <div class="menu-icon" id="menu-icon">&#9776;</div>
-        <ul class="navbar-nav right" id="nav-links">
-            <li class="nav-item"><a class="nav-link active" href="../index.html">Inicio</a></li>
-            <li class="nav-item"><a class="nav-link" href="../pages/nosotros.html">Sobre Nosotros</a></li>
-            <li class="nav-item"><a class="nav-link" href="../pages/productos.html">Productos</a></li>
-            <li class="nav-item"><a class="nav-link" href="../pages/carrito.html">Carrito</a></li>
-            <li class="nav-item"><a class="nav-link" href="../pages/micuenta.html">Mi Cuenta</a></li>
-            <li class="nav-item" id="admin-btn-item" style="display: none;">
-                <a id="admin-btn" class="nav-link" href="../pages/admin.html">Gestión</a>
-            </li>
-            <li class="nav-item" id="logout-btn-item" style="display: none;">
-                <button id="logout-btn" class="nav-link">Cerrar sesión</button>
-            </li>
-        </ul>
-    </nav>
+  <nav class="navbar">
+    <ul class="navbar-nav left">
+      <a href="../index.html">
+        <img
+          src="../assets/images/logoPawsTails-noFondo.png"
+          alt="Logo"
+          class="logo"
+        />
+      </a>
+
+      <h1 class="oswald-title">Paws & Tails</h1>
+      <li class="nav-item" id="welcome-message" style="display: none">
+        <span id="user-welcome"></span>
+      </li>
+    </ul>
+    <div class="menu-icon" id="menu-icon">&#9776;</div>
+    <ul class="navbar-nav right" id="nav-links">
+      <li class="nav-item">
+        <a class="nav-link active" href="../index.html">Inicio</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="../pages/nosotros.html">Sobre Nosotros</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="../pages/productos.html">Productos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="../pages/carrito.html">Carrito</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="../pages/micuenta.html">Mi Cuenta</a>
+      </li>
+      <li class="nav-item" id="admin-btn-item" style="display: none">
+        <a id="admin-btn" class="nav-link" href="../pages/admin.html"
+          >Gestión</a
+        >
+      </li>
+      <li class="nav-item" id="logout-btn-item" style="display: none">
+        <button id="logout-btn" class="nav-link">Cerrar sesión</button>
+      </li>
+    </ul>
+  </nav>
 </header>
 <script>
-    const userexists = localStorage.getItem('usuario');
-    if (userexists) {
-        document.getElementById("logout-btn-item").style.display = "block";
-    }    
+  const userexists = localStorage.getItem("usuario");
+  if (userexists) {
+    document.getElementById("logout-btn-item").style.display = "block";
+  }
 </script>
