@@ -221,9 +221,20 @@
 
     <script src="../assets/js/FuncionesPAT.js"></script>
     <script>
+      $(function () {
+        $("#header-placeholder").load("../components/header.html", function () {
+          inicializarMenuHamburguesa();
+          controlarBotonesDeSesion();
+          asignarCierreSesion();
+          cargarCuentas();
+        });
+        $("#footer-placeholder").load("../components/footer.html");
+      });
+      
       var cuenta = JSON.parse(localStorage.getItem("cuenta"));
       var cedula = cuenta.Cedula;
       console.log("Cédula del usuario:", cedula);
+      
 
       function mostrarLoader() {
         document.getElementById("loader-overlay").style.display = "flex";
@@ -266,15 +277,8 @@
         });
       };
 
-      $(function () {
-        $("#header-placeholder").load("../components/header.html", function () {
-          inicializarMenuHamburguesa();
-          controlarBotonesDeSesion();
-          asignarCierreSesion();
-          cargarCuentas();
-        });
-        $("#footer-placeholder").load("../components/footer.html");
-      });
+      
+      
       function finalizarCompra() {
         const direccion = $("#direccion").val();
         const metodoPago = "Transferencia";

@@ -107,8 +107,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (carrito.length === 0) {
         container.innerHTML = "<p style='text-align:center;'>Tu carrito está vacío.</p>";
+        summary.style.display = "none";
         return;
     }
+
+    container.innerHTML = "";  // limpiar contenedor para evitar duplicados
 
     let subtotal = 0;
 
@@ -116,30 +119,64 @@ document.addEventListener("DOMContentLoaded", function () {
         const item = document.createElement("div");
         item.className = "carrito-item";
 
-        // Asigna imagen o placeholder
+        // Imagen
         const imagen = document.createElement("img");
         imagen.src = p.imagen || "/images/default-placeholder.png";
         item.appendChild(imagen);
 
+        // Info y cantidad editable
         const info = document.createElement("div");
         info.className = "item-info";
-        info.innerHTML = `<h4>${p.nombre}</h4><small>Cantidad: ${p.cantidad}</small>`;
+
+        const nombre = document.createElement("h4");
+        nombre.textContent = p.nombre;
+        info.appendChild(nombre);
+
+        const cantidadLabel = document.createTextNode("Cantidad: ");
+        info.appendChild(cantidadLabel);
+
+        const cantidadInput = document.createElement("input");
+        cantidadInput.type = "number";
+        cantidadInput.min = 1;
+        cantidadInput.value = p.cantidad;
+        cantidadInput.style.width = "50px";
+        cantidadInput.dataset.index = index;
+        cantidadInput.addEventListener("change", function (e) {
+            const nuevoValor = parseInt(e.target.value);
+            if (isNaN(nuevoValor) || nuevoValor < 1) {
+                alert("Cantidad inválida. Debe ser al menos 1.");
+                e.target.value = carrito[index].cantidad;
+                return;
+            }
+            carrito[index].cantidad = nuevoValor;
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+            actualizarVistaCarrito();
+        });
+        info.appendChild(cantidadInput);
+
         item.appendChild(info);
 
+        // Precio total producto
         const precio = document.createElement("div");
         precio.className = "item-precio";
         const totalItem = p.precio * p.cantidad;
         precio.textContent = `$${totalItem.toFixed(2)}`;
         item.appendChild(precio);
 
-        // Botón para eliminar del carrito
+        // Botón eliminar
         const botonEliminar = document.createElement("button");
         botonEliminar.className = "btn-eliminar";
         botonEliminar.textContent = "❌";
-        botonEliminar.onclick = () => eliminarDelCarrito(index);
+        botonEliminar.onclick = () => {
+            carrito.splice(index, 1);
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+            alert("Producto eliminado");
+            actualizarVistaCarrito();
+        };
         item.appendChild(botonEliminar);
 
         container.appendChild(item);
+
         subtotal += totalItem;
     });
 
@@ -151,6 +188,96 @@ document.addEventListener("DOMContentLoaded", function () {
     totalEl.textContent = `$${total.toFixed(2)}`;
     summary.style.display = "block";
 });
+
+function actualizarVistaCarrito() {
+    // Simula el mismo código para refrescar el carrito
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const container = document.getElementById("carrito-container");
+    const summary = document.getElementById("carrito-summary");
+    const subtotalEl = document.getElementById("subtotal");
+    const ivaEl = document.getElementById("iva");
+    const totalEl = document.getElementById("total");
+
+    if (carrito.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>Tu carrito está vacío.</p>";
+        summary.style.display = "none";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    let subtotal = 0;
+
+    carrito.forEach((p, index) => {
+        const item = document.createElement("div");
+        item.className = "carrito-item";
+
+        const imagen = document.createElement("img");
+        imagen.src = p.imagen || "/images/default-placeholder.png";
+        item.appendChild(imagen);
+
+        const info = document.createElement("div");
+        info.className = "item-info";
+
+        const nombre = document.createElement("h4");
+        nombre.textContent = p.nombre;
+        info.appendChild(nombre);
+
+        const cantidadLabel = document.createTextNode("Cantidad: ");
+        info.appendChild(cantidadLabel);
+
+        const cantidadInput = document.createElement("input");
+        cantidadInput.type = "number";
+        cantidadInput.min = 1;
+        cantidadInput.value = p.cantidad;
+        cantidadInput.style.width = "50px";
+        cantidadInput.dataset.index = index;
+        cantidadInput.addEventListener("change", function (e) {
+            const nuevoValor = parseInt(e.target.value);
+            if (isNaN(nuevoValor) || nuevoValor < 1) {
+                alert("Cantidad inválida. Debe ser al menos 1.");
+                e.target.value = carrito[index].cantidad;
+                return;
+            }
+            carrito[index].cantidad = nuevoValor;
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+            actualizarVistaCarrito();
+        });
+        info.appendChild(cantidadInput);
+
+        item.appendChild(info);
+
+        const precio = document.createElement("div");
+        precio.className = "item-precio";
+        const totalItem = p.precio * p.cantidad;
+        precio.textContent = `$${totalItem.toFixed(2)}`;
+        item.appendChild(precio);
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "btn-eliminar";
+        botonEliminar.textContent = "❌";
+        botonEliminar.onclick = () => {
+            carrito.splice(index, 1);
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+            alert("Producto eliminado");
+            actualizarVistaCarrito();
+        };
+        item.appendChild(botonEliminar);
+
+        container.appendChild(item);
+
+        subtotal += totalItem;
+    });
+
+    const iva = subtotal * 0.15;
+    const total = subtotal + iva;
+
+    subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    ivaEl.textContent = `$${iva.toFixed(2)}`;
+    totalEl.textContent = `$${total.toFixed(2)}`;
+    summary.style.display = "block";
+}
+
 
 function eliminarDelCarrito(index) {
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
